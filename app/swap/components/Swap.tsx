@@ -70,7 +70,6 @@ export function Swap() {
 
   const [inputAmount, setInputAmount] = useState<string>("");
   const [debouncedInputAmount] = useDebounceValue(inputAmount, 300);
-  const [isApproved, setIsApproved] = useState<boolean>(false);
 
   const path = [fromToken?.address, toToken?.address]
 
@@ -91,14 +90,10 @@ export function Swap() {
   }
 
   const {
-    approveAsync,
-    approvePending,
-    approveSuccess
-  } = useApprove({})
-
-  const {
     swapAsync,
     swapPending,
+    approvePending,
+    approveSuccess,
     swapSuccess,
     swapError,
     swapConfirmed,
@@ -106,27 +101,13 @@ export function Swap() {
   } = useSwap({
     sell: fromToken?.symbol === 'ETH' ? false : true,
     inAmount: parseUnits(debouncedInputAmount, fromToken ? fromToken.decimals : 18),
+    allowance: allowance ? allowance : BigInt(0)
   })
-
-  useEffect(() => {
-    if (
-      fromToken?.symbol != 'ETH' &&
-      allowance && fromToken &&
-      allowance < parseUnits('1000000', fromToken.decimals)) {
-      setIsApproved(true);
-    }
-  }, [fromToken, allowance])
-
-  useEffect(() => {
-    if (approveSuccess) {
-      setIsApproved(false)
-    }
-  }, [approveSuccess])
 
   return (
     <>
       <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
-        <Label className="flex-[8]">BTEST - WETH in Uniswap V2</Label>
+        <Label className="flex-[8]">BTEST - ETH in Uniswap V2</Label>
       </div>
       <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
         <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
@@ -136,11 +117,8 @@ export function Swap() {
             <Label className="flex-[5]">Min Swap Back and Liquify: 88.8M BTEST</Label>
           </div>
           <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-            <Label className="flex-[5]">Max LF: 15%</Label>
-            <Label className="flex-[5]">Min LF: 3%</Label>
-          </div>
-          <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-            <Label className="flex-[5]">Current LF: {Number(currentLF) / 100}%</Label>
+            <Label className="flex-[5]">Swap ETH - BTEST LF: 0%</Label>
+            <Label className="flex-[5]">Swap BTEST - ETH LF: {Number(currentLF) / 100}%</Label>
           </div>
         </div>
         <Divider className="my-4" />
@@ -193,31 +171,20 @@ export function Swap() {
         <Divider className="my-4" />
 
         <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
-          <Label style={{ color: 'orange' }}>Warning over max allocation and swap back and liquify</Label>
-          { fromToken?.symbol === 'ETH' && outAmounts && toTokenBalance &&
-            THRESHOLD.MaxAllocation < outAmounts[1] + toTokenBalance?.value && 
-            <Label style={{ color: 'red' }}>Over Max Allocation</Label> }
-          { fromToken?.symbol != 'ETH' && accumulatedLF &&
-            THRESHOLD.MinSwapBackAndLiquify < accumulatedLF.value && 
-            <Label style={{ color: 'red' }}>Swap back and liquify</Label> }
-        </div>
-        <Divider className="my-4" />
-
-        <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
           <Label>Swap</Label>
           <Button
-            onClick={() => isApproved ? approveAsync() : swapAsync()}
+            onClick={() => swapAsync()}
             disabled={!(outAmounts && toToken) || swapPending || approvePending}
             className="mt-2"
             variant="accent"
           >
-            {isApproved ? 
+            {
               approvePending ? "Approving" :
                 approveSuccess ? "Approve successful" :
-                "Approve" :
                   swapPending
                     ? "Executing..."
-                      : "Swap"}
+                      : "Swap"
+            }
           </Button>
 
           <div className="flex gap-2">
@@ -227,6 +194,28 @@ export function Swap() {
               </ExternalLink>
             )}
           </div>
+        </div>
+        <Divider className="my-4" />
+
+        <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
+          <Label style={{ color: 'orange' }}>Warning over max allocation and swap back and liquify</Label>
+          <Divider className="my-4" />
+          { fromToken?.symbol === 'ETH' && outAmounts && toTokenBalance &&
+            THRESHOLD.MaxAllocation < outAmounts[1] + toTokenBalance?.value && 
+            <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
+              <Label className="flex-[5]">Your current allocation: {fromToken?.symbol === 'ETH' ? outputBalance : inputBalance} + Swap Output: {Number(formatUnits(outAmounts ? outAmounts[1] : BigInt(0), toToken ? toToken.decimals : 18)).toFixed(4)}</Label>
+              <Label style={{ color: 'red' }}>Over Max Allocation 8.88B BTEST</Label>
+            </div>
+          }
+          <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
+            <ExternalLink icon={true} href={`https://sepolia.uniscan.xyz/address/${EVM_CONTRACT[DEFAULT_CHAINID].BTest}`}><Label className="my-4">Accumulated LF: {Number(formatUnits(accumulatedLF ? accumulatedLF.value : BigInt(0), accumulatedLF ? accumulatedLF?.decimals: 18)).toFixed(4)} {accumulatedLF?.symbol}</Label></ExternalLink>
+            
+            { fromToken?.symbol != 'ETH' && accumulatedLF &&
+              THRESHOLD.MinSwapBackAndLiquify < accumulatedLF.value && 
+            <Label className="flex-[5]" style={{ color: 'red' }}>Over swap back and liquify threshold 88.8M BTEST</Label> }
+          </div>
+          <Divider className="my-4" />
+          <ExternalLink icon={true} href={'https://sepolia.uniscan.xyz/token/0x74FEb96747D7dFd3F749589071bA72a1ab80b4E1'}>Accumulated Liquidity Position</ExternalLink>
         </div>
       </div>
     </>

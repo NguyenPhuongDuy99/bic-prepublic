@@ -13,10 +13,13 @@ import { UniswapRouterABI } from "../abis/uniswapRouter";
 import { TokenList } from "../constants/tokenList";
 import { blobsToCommitments } from "viem";
 import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
+import { useGetAllowance } from "./useGetAllowance";
+import { useApprove } from "./useApprove";
   
   interface SwapParams {
     sell: boolean
     inAmount: bigint
+    allowance: bigint
   }
   
   export function useSwap(
@@ -29,8 +32,13 @@ import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
     const queryClient = useQueryClient();
     const { switchChainAsync } = useSwitchChain();
     const now = new Date().getTime()
-    console.log('now', Math.floor(now / 1000))
-  
+
+    const {
+      approveAsync,
+      approvePending,
+      approveSuccess
+    } = useApprove({})
+    
     const buyConfig = {
       abi: UniswapRouterABI,
       address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].UniswapRouter,
@@ -98,10 +106,17 @@ import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
       swap: () => params.sell ? writeContract(sellConfig) : writeContract(buyConfig),
       swapAsync: async () => {
         await checkChain();
+        if (
+          params.sell &&
+          params.allowance < params.inAmount) {
+          await approveAsync()
+        }
         return params.sell ? writeContractAsync(sellConfig) : writeContractAsync(buyConfig);
       },
       swapConfirmed,
       swapConfirming,
+      approvePending,
+      approveSuccess,
       swapPending,
       swapError,
       swapSuccess,
