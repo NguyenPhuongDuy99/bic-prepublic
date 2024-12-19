@@ -1,5 +1,5 @@
 import { Providers } from "@/components/Provider";
-import { Header, Swap } from "./swap/components";
+import { Header, Swap } from "./components";
 
 export default function Home() {
   return (
