@@ -11,11 +11,13 @@ import { unichainSepolia } from "viem/chains";
 import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 import { ERC20ABI } from "../abis/ERC20";
 import { parseEther } from "viem";
+import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 
 export function useApprove(
   queryOptions?: Omit<UseQueryOptions, "queryKey" | "queryFn">
 ) {
   const { address } = useAccount();
+  const addRecentTransaction = useAddRecentTransaction()
   const currentChainId = useChainId();
   const queryClient = useQueryClient();
   const { switchChainAsync } = useSwitchChain();
@@ -51,6 +53,13 @@ export function useApprove(
       enabled: Boolean(hash),
     },
   });
+
+  if (approveReceipt) {
+    addRecentTransaction({
+      hash: approveReceipt.transactionHash,
+      description: "approve"
+    })
+  }
 
   const approveTxLink =
     approveReceipt &&

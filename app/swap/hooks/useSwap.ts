@@ -11,6 +11,8 @@ import { arbitrumSepolia, unichainSepolia } from "viem/chains";
 import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 import { UniswapRouterABI } from "../abis/uniswapRouter";
 import { TokenList } from "../constants/tokenList";
+import { blobsToCommitments } from "viem";
+import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
   
   interface SwapParams {
     sell: boolean
@@ -23,6 +25,7 @@ import { TokenList } from "../constants/tokenList";
   ) {
     const { address } = useAccount();
     const currentChainId = useChainId();
+    const addRecentTransaction = useAddRecentTransaction()
     const queryClient = useQueryClient();
     const { switchChainAsync } = useSwitchChain();
     const now = new Date().getTime()
@@ -33,7 +36,7 @@ import { TokenList } from "../constants/tokenList";
       address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].UniswapRouter,
       chainId: currentChainId,
       functionName: "swapExactETHForTokens",
-      args: [0, [TokenList[0].address, TokenList[1].address], address, Math.floor(now / 1000) + 600],
+      args: [BigInt(0), [TokenList[0].address, TokenList[1].address], address!, BigInt(Math.floor(now / 1000) + 600)],
       value: params.inAmount,
       account: address,
     } as const;
@@ -43,7 +46,7 @@ import { TokenList } from "../constants/tokenList";
       address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].UniswapRouter,
       chainId: currentChainId,
       functionName: "swapExactTokensForETHSupportingFeeOnTransferTokens",
-      args: [params.inAmount, 0, [TokenList[1].address, TokenList[0].address], address, Math.floor(now / 1000) + 600],
+      args: [params.inAmount, BigInt(0), [TokenList[1].address, TokenList[0].address], address!, BigInt(Math.floor(now / 1000) + 600)],
       account: address,
     } as const;
 
@@ -74,6 +77,13 @@ import { TokenList } from "../constants/tokenList";
         enabled: Boolean(hash),
       },
     });
+
+    if (swapReceipt) {
+      addRecentTransaction({
+        hash: swapReceipt.transactionHash,
+        description: "swap"
+      })
+    }
   
     const swapTxLink =
       swapReceipt &&
@@ -85,10 +95,10 @@ import { TokenList } from "../constants/tokenList";
   
     return {
       hash,
-      swap: () => writeContract(params.sell ? sellConfig : buyConfig),
+      swap: () => params.sell ? writeContract(sellConfig) : writeContract(buyConfig),
       swapAsync: async () => {
         await checkChain();
-        return writeContractAsync(params.sell ? sellConfig : buyConfig);
+        return params.sell ? writeContractAsync(sellConfig) : writeContractAsync(buyConfig);
       },
       swapConfirmed,
       swapConfirming,

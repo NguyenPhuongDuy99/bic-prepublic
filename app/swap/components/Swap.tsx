@@ -184,7 +184,8 @@ export function Swap() {
                 id="input-amount"
                 placeholder="Output amount"
                 type="number"
-                defaultValue={formatUnits(outAmounts ? outAmounts[1] : BigInt(0), toToken ? toToken.decimals : 18)}
+                readOnly={true}
+                defaultValue={Number(formatUnits(outAmounts ? outAmounts[1] : BigInt(0), toToken ? toToken.decimals : 18)).toFixed(4)}
               />
             </div>
           </div>

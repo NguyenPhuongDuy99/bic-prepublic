@@ -7,8 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
-import { TokenInfo } from "@across-protocol/app-sdk";
+import { cn, TokenInfo } from "@/lib/utils";
 import { Skeleton } from "./ui";
 import Image from "next/image";
 import { SelectProps } from "@radix-ui/react-select";

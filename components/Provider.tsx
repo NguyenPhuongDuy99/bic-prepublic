@@ -36,6 +36,7 @@ function RainbowProvider({ children }: { children: React.ReactNode }) {
     <RainbowKitProvider
       theme={resolvedTheme === "dark" ? darkTheme() : lightTheme()}
       initialChain={unichainSepolia}
+      showRecentTransactions={true}
     >
       {children}
     </RainbowKitProvider>
