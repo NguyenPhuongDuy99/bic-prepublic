@@ -18,6 +18,7 @@ import { useGetAllowance } from "../hooks/useGetAllowance";
 import { useGetCurrentLF } from "../hooks/useGetCurrentLF";
 import { THRESHOLD } from "../constants/config";
 import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
+import { AddToken } from "./AddToken";
 
 export function Swap() {
   const { address } = useAccount();
@@ -107,7 +108,12 @@ export function Swap() {
   return (
     <>
       <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
-        <Label className="flex-[8]">BTEST - ETH in Uniswap V2</Label>
+        <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
+          <ExternalLink className="flex-[8]" icon={true} href='https://sepolia.uniscan.xyz/address/0x74FEb96747D7dFd3F749589071bA72a1ab80b4E1'>
+            <Label>BTEST - ETH in Uniswap V2</Label>
+          </ExternalLink>
+          <AddToken />
+        </div>
       </div>
       <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
         <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
