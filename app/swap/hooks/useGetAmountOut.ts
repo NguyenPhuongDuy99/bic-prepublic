@@ -1,7 +1,7 @@
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { useBalance, useChainId, useClient, useReadContract } from "wagmi";
 import { UniswapRouterABI } from "../abis/uniswapRouter";
-import { EVM_CONTRACT } from "../constants/contractAddress";
+import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 
 interface BalanceParams {
   inAmount: bigint
@@ -24,7 +24,7 @@ export function useGetOutAmount(
     ...rest
   } = useReadContract({
     abi: UniswapRouterABI,
-    address: EVM_CONTRACT[currentChainId || '1301'].UniswapRouter,
+    address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].UniswapRouter,
     functionName: "getAmountsOut",
     chainId: currentChainId,
     args: [params.inAmount, params.path],

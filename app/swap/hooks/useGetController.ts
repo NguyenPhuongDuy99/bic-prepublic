@@ -1,6 +1,6 @@
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { useChainId, useReadContract } from "wagmi";
-import { EVM_CONTRACT } from "../constants/contractAddress";
+import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 import { BICABI } from "../abis/BIC";
 
 
@@ -19,7 +19,7 @@ export function useGetController(
     ...rest
   } = useReadContract({
     abi: BICABI,
-    address: EVM_CONTRACT[currentChainId || '1301'].BTest,
+    address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
     functionName: "treasuryController",
     chainId: currentChainId,
     args: [],

@@ -19,10 +19,20 @@ import { useGetCurrentLF } from "../hooks/useGetCurrentLF";
 import { THRESHOLD } from "../constants/config";
 import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 import { AddToken } from "./AddToken";
+import { useGetPairReserves } from "../hooks/useGetPairReserves";
 
 export function Swap() {
   const { address } = useAccount();
   const currentChainId = useChainId();
+
+  // get pair reserves
+
+  const {
+    reserves,
+    tokens
+  } = useGetPairReserves({})
+
+  console.log('reserves ', reserves, tokens)
 
   // FROM TOKEN
   const [fromToken, setFromToken] = useState<TokenInfo | undefined>(
@@ -109,9 +119,20 @@ export function Swap() {
     <>
       <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
         <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-          <ExternalLink className="flex-[8]" icon={true} href='https://sepolia.uniscan.xyz/address/0x74FEb96747D7dFd3F749589071bA72a1ab80b4E1'>
-            <Label>BTEST - ETH in Uniswap V2</Label>
-          </ExternalLink>
+          
+          <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
+            <ExternalLink className="w-full" icon={true} href='https://sepolia.uniscan.xyz/address/0x74FEb96747D7dFd3F749589071bA72a1ab80b4E1'>
+              <Label>BTEST - ETH in Uniswap V2</Label>
+            </ExternalLink>
+            <div className="w-full flex flex-col sm:flex-row justify-start items-center my-2 gap-2">
+              <Label className="flex-[5]">Pool Reserves:</Label>
+              <Label className="flex-[5]">
+                {Number(formatUnits(reserves ? reserves[0] : BigInt(0), 18)).toFixed(4)} {Number(tokens[0]) > Number(tokens[1]) ? "BTEST" : "ETH"} -
+                {Number(formatUnits(reserves ? reserves[1] : BigInt(0), 18)).toFixed(4)} {Number(tokens[1]) > Number(tokens[0]) ? "BTEST" : "ETH"}
+                
+              </Label>
+            </div>
+          </div>
           <AddToken />
         </div>
       </div>
@@ -169,7 +190,9 @@ export function Swap() {
                 placeholder="Output amount"
                 type="number"
                 readOnly={true}
-                defaultValue={Number(formatUnits(outAmounts ? outAmounts[1] : BigInt(0), toToken ? toToken.decimals : 18)).toFixed(4)}
+                defaultValue={
+                  Number(formatUnits(outAmounts ? outAmounts[1] : BigInt(0), toToken ? toToken.decimals : 18)).toFixed(8)
+                }
               />
             </div>
           </div>
@@ -186,7 +209,6 @@ export function Swap() {
           >
             {
               approvePending ? "Approving" :
-                approveSuccess ? "Approve successful" :
                   swapPending
                     ? "Executing..."
                       : "Swap"
@@ -206,13 +228,13 @@ export function Swap() {
         <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
           <Label style={{ color: 'orange' }}>Warning over max allocation and swap back and liquify</Label>
           <Divider className="my-4" />
-          { fromToken?.symbol === 'ETH' && outAmounts && toTokenBalance &&
+          {/* { fromToken?.symbol === 'ETH' && outAmounts && toTokenBalance &&
             THRESHOLD.MaxAllocation < outAmounts[1] + toTokenBalance?.value && 
             <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
               <Label className="flex-[5]">Your current allocation: {fromToken?.symbol === 'ETH' ? outputBalance : inputBalance} + Swap Output: {Number(formatUnits(outAmounts ? outAmounts[1] : BigInt(0), toToken ? toToken.decimals : 18)).toFixed(4)}</Label>
               <Label style={{ color: 'red' }}>Over Max Allocation 8.88B BTEST</Label>
             </div>
-          }
+          } */}
           <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
             <ExternalLink icon={true} href={`https://sepolia.uniscan.xyz/address/${EVM_CONTRACT[DEFAULT_CHAINID].BTest}`}><Label className="my-4">Accumulated LF: {Number(formatUnits(accumulatedLF ? accumulatedLF.value : BigInt(0), accumulatedLF ? accumulatedLF?.decimals: 18)).toFixed(4)} {accumulatedLF?.symbol}</Label></ExternalLink>
             
