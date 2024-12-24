@@ -140,7 +140,7 @@ export function Swap() {
         <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
           <Label>Context of BTest token's config </Label>
           <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-            <Label className="flex-[5]">Max Allocation: 8.88B BTEST</Label>
+            <Label className="flex-[5]"></Label>
             <Label className="flex-[5]">Min Swap Back and Liquify: 88.8M BTEST</Label>
           </div>
           <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
@@ -226,7 +226,7 @@ export function Swap() {
         <Divider className="my-4" />
 
         <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
-          <Label style={{ color: 'orange' }}>Warning over max allocation and swap back and liquify</Label>
+          <Label style={{ color: 'orange' }}>Warning over swap back and liquify</Label>
           <Divider className="my-4" />
           {/* { fromToken?.symbol === 'ETH' && outAmounts && toTokenBalance &&
             THRESHOLD.MaxAllocation < outAmounts[1] + toTokenBalance?.value && 
