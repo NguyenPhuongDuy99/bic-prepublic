@@ -121,7 +121,7 @@ export function Swap() {
         <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
           
           <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
-            <ExternalLink className="w-full" icon={true} href='https://sepolia.uniscan.xyz/address/0x74FEb96747D7dFd3F749589071bA72a1ab80b4E1'>
+            <ExternalLink className="w-full" icon={true} href={`https://sepolia.uniscan.xyz/token/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}`}>
               <Label>BTEST - ETH in Uniswap V2</Label>
             </ExternalLink>
             <div className="w-full flex flex-col sm:flex-row justify-start items-center my-2 gap-2">
@@ -243,7 +243,7 @@ export function Swap() {
             <Label className="flex-[5]" style={{ color: 'red' }}>Over swap back and liquify threshold 88.8M BTEST</Label> }
           </div>
           <Divider className="my-4" />
-          <ExternalLink icon={true} href={'https://sepolia.uniscan.xyz/token/0x74FEb96747D7dFd3F749589071bA72a1ab80b4E1'}>Accumulated Liquidity Position</ExternalLink>
+          <ExternalLink icon={true} href={`https://sepolia.uniscan.xyz/token/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}`}>Accumulated Liquidity Position</ExternalLink>
         </div>
       </div>
     </>
