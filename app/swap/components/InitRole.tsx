@@ -18,7 +18,7 @@ export const InitRole = ({
         variant="accent"
         style={{ backgroundColor: 'red' }}
       >
-        Excluded address
+        Owner
       </Button>}
     </div>
   );

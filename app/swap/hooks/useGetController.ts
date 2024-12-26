@@ -20,7 +20,7 @@ export function useGetController(
   } = useReadContract({
     abi: BICABI,
     address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
-    functionName: "treasuryController",
+    functionName: "owner",
     chainId: currentChainId,
     args: [],
     query: {

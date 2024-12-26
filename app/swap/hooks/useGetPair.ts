@@ -3,7 +3,7 @@ import { useChainId, useReadContract } from "wagmi";
 import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 import { BICABI } from "../abis/BIC";
 
-export function useGetCurrentLF(
+export function useGetPair(
   queryOptions?: Omit<UseQueryOptions, "queryKey" | "queryFn">
 ) {
   const currentChainId = useChainId()
@@ -13,13 +13,13 @@ export function useGetCurrentLF(
   )
   
   const {
-    data: currentLF,
+    data: pair,
     queryKey,
     ...rest
   } = useReadContract({
     abi: BICABI,
     address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
-    functionName: "getCurrentLF",
+    functionName: "getUniswapV2Pair",
     chainId: currentChainId,
     args: [],
     query: {
@@ -28,8 +28,8 @@ export function useGetCurrentLF(
   });
 
   return {
-    currentLFQueryKey: queryKey,
-    currentLF: currentLF,
+    pairQueryKey: queryKey,
+    pair: pair,
     ...rest,
   };
 }

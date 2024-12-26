@@ -20,6 +20,7 @@ import { THRESHOLD } from "../constants/config";
 import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 import { AddToken } from "./AddToken";
 import { useGetPairReserves } from "../hooks/useGetPairReserves";
+import { useGetPair } from "../hooks/useGetPair";
 
 export function Swap() {
   const { address } = useAccount();
@@ -31,8 +32,6 @@ export function Swap() {
     reserves,
     tokens
   } = useGetPairReserves({})
-
-  console.log('reserves ', reserves, tokens)
 
   // FROM TOKEN
   const [fromToken, setFromToken] = useState<TokenInfo | undefined>(
@@ -141,7 +140,7 @@ export function Swap() {
           <Label>Context of BTest token's config </Label>
           <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
             <Label className="flex-[5]"></Label>
-            <Label className="flex-[5]">Min Swap Back and Liquify: 88.8M BTEST</Label>
+            <Label className="flex-[5]">Min Swap Back and Liquify: 100M BTEST</Label>
           </div>
           <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
             <Label className="flex-[5]">Swap ETH - BTEST LF: 0%</Label>
