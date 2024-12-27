@@ -35,7 +35,11 @@ export function Swap() {
     transport: http()
   })
 
+  // min swap back and liquify
+  const [minSwapBack, setMinSwapBack] = useState<string>('88.8')
+
   // get pre-public info
+  const [prePublic, setPrePublic] = useState<boolean>(false)
   const {
     whitelistCategory
   } = useGetWhitelistCategory({
@@ -140,16 +144,18 @@ export function Swap() {
     allowance: allowance ? allowance : BigInt(0)
   })
 
-  const [prePublic, setPrePublic] = useState<boolean>(false)
-
   useEffect(() => {
     (async () => {
-      const data = await client.getStorageAt({
+      const prePublicData = await client.getStorageAt({
         address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
         slot: toHex(fromHex('0xd959cca23720948e5f992e1bef099a518994cc8b384c796f2b25ba30718fb300', 'bigint') + BigInt(9))
       })
-
-      setPrePublic(Boolean(Number(data?.slice(24,26))));
+      const minSwapBackData = await client.getStorageAt({
+        address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
+        slot: toHex(fromHex('0xd959cca23720948e5f992e1bef099a518994cc8b384c796f2b25ba30718fb300', 'bigint') + BigInt(5))
+      })
+      setMinSwapBack((Number(formatUnits(fromHex(minSwapBackData!, 'bigint'), 18)) / 1000000).toFixed(2).toString())
+      setPrePublic(Boolean(Number(prePublicData?.slice(24,26))));
     })()
   }, [])
 
@@ -165,9 +171,9 @@ export function Swap() {
             <div className="w-full flex flex-col sm:flex-row justify-start items-center my-2 gap-2">
               <Label className="flex-[5]">Pool Reserves:</Label>
               <Label className="flex-[5]">
-                {Number(formatUnits(reserves ? reserves[0] : BigInt(0), 18)).toFixed(4)} {Number(tokens[0]) > Number(tokens[1]) ? "BTEST" : "ETH"} -
-                {Number(formatUnits(reserves ? reserves[1] : BigInt(0), 18)).toFixed(4)} {Number(tokens[1]) > Number(tokens[0]) ? "BTEST" : "ETH"}
-                
+                {`${Number(formatUnits(reserves ? reserves[0] : BigInt(0), 18)).toFixed(4)} ${Number(tokens[0]) > Number(tokens[1]) ? "BTEST" : "ETH"} - 
+                  ${Number(formatUnits(reserves ? reserves[1] : BigInt(0), 18)).toFixed(4)} ${Number(tokens[1]) > Number(tokens[0]) ? "BTEST" : "ETH"}
+                `}
               </Label>
             </div>
           </div>
@@ -179,7 +185,7 @@ export function Swap() {
           <Label>Context of BTest token's config </Label>
           <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
             <Label className="flex-[5]"></Label>
-            <Label className="flex-[5]">Min Swap Back and Liquify: 100M BTEST</Label>
+            <Label className="flex-[5]">Min Swap Back and Liquify: {minSwapBack}M BTEST</Label>
           </div>
           <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
             <Label className="flex-[5]">Swap ETH - BTEST LF: 0%</Label>
