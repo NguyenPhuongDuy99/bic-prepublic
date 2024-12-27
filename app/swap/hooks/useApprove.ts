@@ -10,7 +10,7 @@ import { getExplorerLink } from "../../../lib/utils";
 import { unichainSepolia } from "viem/chains";
 import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 import { ERC20ABI } from "../abis/ERC20";
-import { parseEther } from "viem";
+import { maxUint256, parseEther } from "viem";
 import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 
 export function useApprove(
@@ -27,7 +27,7 @@ export function useApprove(
     address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
     chainId: currentChainId,
     functionName: "approve",
-    args: [EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].UniswapRouter, parseEther('9999999999999999999999999')],
+    args: [EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].UniswapRouter, maxUint256],
     account: address,
   } as const;
 

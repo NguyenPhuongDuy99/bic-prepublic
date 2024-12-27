@@ -3,7 +3,7 @@
 import { Divider } from "@/components/Divider";
 import { TokenSelect } from "@/components/TokenSelect";
 import { Button, Label } from "@/components/ui";
-import { isNativeToken, TokenInfo } from "@/lib/utils";
+import { formatTime, isNativeToken, TokenInfo } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { formatUnits, parseUnits } from "viem";
 import { useAccount, useBalance, useChainId } from "wagmi";
@@ -21,10 +21,33 @@ import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 import { AddToken } from "./AddToken";
 import { useGetPairReserves } from "../hooks/useGetPairReserves";
 import { useGetPair } from "../hooks/useGetPair";
+import { useGetWhitelistCategory } from "../hooks/useGetWhitelistCategory";
+import { useGetPrePublicRound } from "../hooks/useGetPrepublicRound";
 
 export function Swap() {
   const { address } = useAccount();
   const currentChainId = useChainId();
+  const now = Math.floor(new Date().getTime() / 1000)
+
+  console.log('now', now)
+  // get pre-public info
+  const {
+    whitelistCategory
+  } = useGetWhitelistCategory({
+    address: address
+  }, {
+    enabled: Boolean(address)
+  })
+
+  const {
+    roundInfo
+  } = useGetPrePublicRound({
+    category: whitelistCategory
+  }, {
+    enabled: Boolean(whitelistCategory)
+  })
+
+  console.log('whitelist round info', whitelistCategory, roundInfo)
 
   // get pair reserves
 
@@ -114,6 +137,8 @@ export function Swap() {
     allowance: allowance ? allowance : BigInt(0)
   })
 
+  console.log('out amounts ', outAmounts, roundInfo?.maxAmountPerBuy)
+
   return (
     <>
       <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
@@ -150,6 +175,21 @@ export function Swap() {
         <Divider className="my-4" />
 
         <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
+          {roundInfo && <>
+            <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
+              <Label>Your Pre-Public Round {roundInfo.category}</Label>
+              <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
+                <Label className="flex-[5]">Start At: {formatTime(Number(roundInfo.startTime) * 1000)}</Label>
+                <Label className="flex-[5]">End At: {formatTime(Number(roundInfo.endTime) * 1000)}</Label>
+              </div>
+              <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
+                <Label className="flex-[5]">Cool down: {roundInfo.coolDown} seconds</Label>
+                <Label className="flex-[5]">Max Amount Per Buy: {formatUnits(roundInfo.maxAmountPerBuy, 18)} BTEST</Label>
+              </div>
+            </div>
+            <Divider className="my-4" />
+          </>}
+        
           <div className="flex flex-col gap-4 w-full">
             <Label htmlFor="origin-chain">From</Label>
             <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
@@ -199,6 +239,15 @@ export function Swap() {
         <Divider className="my-4" />
 
         <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
+          { roundInfo && (now < roundInfo.startTime || now > roundInfo.endTime) && 
+            <Label className="flex-[5]" style={{ color: 'red' }}>Your pre-public round is not active. Please check the round info above!</Label>
+          }
+          { roundInfo && 
+                outAmounts && fromToken && fromToken.symbol === 'ETH' && outAmounts[1] > roundInfo.maxAmountPerBuy && <div>
+              <Label className="flex-[5]" style={{ color: 'red' }}>Over swap max amount per buy in your pre-public round {formatUnits(roundInfo.maxAmountPerBuy, 18)} BTEST</Label>
+            </div> 
+          }
+          
           <Label>Swap</Label>
           <Button
             onClick={() => swapAsync()}
