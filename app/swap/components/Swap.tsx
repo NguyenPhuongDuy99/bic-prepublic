@@ -196,7 +196,7 @@ export function Swap() {
 
         <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
           <Label className="w-full" style={{ color: 'orange' }}>{prePublic ? "Pre Public Phase" : "Public Phase"}</Label>
-          {(roundInfo && prePublic) ? (<>
+          {prePublic ? roundInfo ? (<>
             <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
               <Label>Your Pre-Public Round {roundInfo.category}</Label>
               <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
@@ -209,12 +209,9 @@ export function Swap() {
               </div>
             </div>
             <Divider className="my-4" />
-          </>) : roundInfo ? (
-            <>
-            </>
-          ) : (
+          </>) : (
             <Label className="w-full" style={{ color: "red" }}>You are not in whitelist. Please wait for public phase!</Label>
-          )
+          ) : (<></>)
           }
         
           <div className="flex flex-col gap-4 w-full">
