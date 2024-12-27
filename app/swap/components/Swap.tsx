@@ -5,7 +5,7 @@ import { TokenSelect } from "@/components/TokenSelect";
 import { Button, Label } from "@/components/ui";
 import { formatTime, isNativeToken, TokenInfo } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { formatUnits, parseUnits } from "viem";
+import { createPublicClient, formatUnits, fromHex, Hex, http, parseUnits, toHex } from "viem";
 import { useAccount, useBalance, useChainId } from "wagmi";
 import { useDebounceValue } from "usehooks-ts";
 import { TokenInput } from "@/components/TokenInput";
@@ -23,11 +23,17 @@ import { useGetPairReserves } from "../hooks/useGetPairReserves";
 import { useGetPair } from "../hooks/useGetPair";
 import { useGetWhitelistCategory } from "../hooks/useGetWhitelistCategory";
 import { useGetPrePublicRound } from "../hooks/useGetPrepublicRound";
+import { unichainSepolia } from "viem/chains";
 
 export function Swap() {
   const { address } = useAccount();
   const currentChainId = useChainId();
   const now = Math.floor(new Date().getTime() / 1000)
+
+  const client = createPublicClient({
+    chain: unichainSepolia,
+    transport: http()
+  })
 
   console.log('now', now)
   // get pre-public info
@@ -138,6 +144,19 @@ export function Swap() {
   })
 
   console.log('out amounts ', outAmounts, roundInfo?.maxAmountPerBuy)
+  const [prePublic, setPrePublic] = useState<boolean>(true)
+
+  useEffect(() => {
+    (async () => {
+      const data = await client.getStorageAt({
+        address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
+        slot: toHex(fromHex('0xd959cca23720948e5f992e1bef099a518994cc8b384c796f2b25ba30718fb300', 'bigint') + BigInt(9))
+      })
+
+      console.log('get storage data', data, fromHex(data as Hex, 'number'))
+      setPrePublic(Boolean(Number(data?.slice(24,26))));
+    })()
+  }, [])
 
   return (
     <>
@@ -175,7 +194,8 @@ export function Swap() {
         <Divider className="my-4" />
 
         <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
-          {roundInfo && <>
+          <Label className="w-full" style={{ color: 'orange' }}>{prePublic ? "Pre Public Phase" : "Public Phase"}</Label>
+          {(roundInfo && prePublic) ? (<>
             <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
               <Label>Your Pre-Public Round {roundInfo.category}</Label>
               <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
@@ -188,7 +208,13 @@ export function Swap() {
               </div>
             </div>
             <Divider className="my-4" />
-          </>}
+          </>) : roundInfo ? (
+            <>
+            </>
+          ) : (
+            <Label className="w-full" style={{ color: "red" }}>You are not in whitelist. Please wait for public phase!</Label>
+          )
+          }
         
           <div className="flex flex-col gap-4 w-full">
             <Label htmlFor="origin-chain">From</Label>
@@ -239,13 +265,16 @@ export function Swap() {
         <Divider className="my-4" />
 
         <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
-          { roundInfo && (now < roundInfo.startTime || now > roundInfo.endTime) && 
+          { roundInfo && prePublic && (now < roundInfo.startTime || now > roundInfo.endTime) && 
             <Label className="flex-[5]" style={{ color: 'red' }}>Your pre-public round is not active. Please check the round info above!</Label>
           }
-          { roundInfo && 
+          { roundInfo && prePublic && 
                 outAmounts && fromToken && fromToken.symbol === 'ETH' && outAmounts[1] > roundInfo.maxAmountPerBuy && <div>
               <Label className="flex-[5]" style={{ color: 'red' }}>Over swap max amount per buy in your pre-public round {formatUnits(roundInfo.maxAmountPerBuy, 18)} BTEST</Label>
             </div> 
+          }
+          {
+            prePublic && (!roundInfo) && <Label className="w-full" style={{ color: "red" }}>You are not in whitelist. Please wait for public phase!</Label>
           }
           
           <Label>Swap</Label>
