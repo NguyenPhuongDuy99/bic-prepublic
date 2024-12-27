@@ -35,7 +35,6 @@ export function Swap() {
     transport: http()
   })
 
-  console.log('now', now)
   // get pre-public info
   const {
     whitelistCategory
@@ -52,8 +51,6 @@ export function Swap() {
   }, {
     enabled: Boolean(whitelistCategory)
   })
-
-  console.log('whitelist round info', whitelistCategory, roundInfo)
 
   // get pair reserves
 
@@ -143,8 +140,7 @@ export function Swap() {
     allowance: allowance ? allowance : BigInt(0)
   })
 
-  console.log('out amounts ', outAmounts, roundInfo?.maxAmountPerBuy)
-  const [prePublic, setPrePublic] = useState<boolean>(true)
+  const [prePublic, setPrePublic] = useState<boolean>(false)
 
   useEffect(() => {
     (async () => {
@@ -153,7 +149,6 @@ export function Swap() {
         slot: toHex(fromHex('0xd959cca23720948e5f992e1bef099a518994cc8b384c796f2b25ba30718fb300', 'bigint') + BigInt(9))
       })
 
-      console.log('get storage data', data, fromHex(data as Hex, 'number'))
       setPrePublic(Boolean(Number(data?.slice(24,26))));
     })()
   }, [])
