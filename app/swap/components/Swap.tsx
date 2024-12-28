@@ -156,6 +156,11 @@ export function Swap() {
       })
       setMinSwapBack((Number(formatUnits(fromHex(minSwapBackData!, 'bigint'), 18)) / 1000000).toFixed(2).toString())
       setPrePublic(Boolean(Number(prePublicData?.slice(24,26))));
+
+      const lfStartTime = await client.getStorageAt({
+        address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
+        slot: toHex(fromHex('0xd959cca23720948e5f992e1bef099a518994cc8b384c796f2b25ba30718fb300', 'bigint') + BigInt(0))
+      })
     })()
   }, [])
 
@@ -184,8 +189,8 @@ export function Swap() {
         <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
           <Label>Context of BTest token's config </Label>
           <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-            <Label className="flex-[5]"></Label>
             <Label className="flex-[5]">Min Swap Back and Liquify: {minSwapBack}M BTEST</Label>
+            <Label className="flex-[5]"></Label>
           </div>
           <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
             <Label className="flex-[5]">Swap ETH - BTEST LF: 0%</Label>
@@ -205,7 +210,7 @@ export function Swap() {
               </div>
               <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
                 <Label className="flex-[5]">Cool down: {roundInfo.coolDown} seconds</Label>
-                <Label className="flex-[5]">Max Amount Per Buy: {formatUnits(roundInfo.maxAmountPerBuy, 18)} BTEST</Label>
+                <Label className="flex-[5]">Max Amount Per Buy: {(Number(formatUnits(roundInfo.maxAmountPerBuy, 18)) / 1000000).toFixed(2)}M BTEST</Label>
               </div>
             </div>
             <Divider className="my-4" />
@@ -321,9 +326,9 @@ export function Swap() {
           <ExternalLink icon={true} href={`https://sepolia.uniscan.xyz/token/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}`}>Accumulated Liquidity Position</ExternalLink>
         </div>
       </div>
-      <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]" style={{ height: '1000px'}}>
+      {/* <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]" style={{ height: '1000px'}}>
         <iframe height="100%" width="100%" id="geckoterminal-embed" title="GeckoTerminal Embed" src="https://www.geckoterminal.com/unichain-sepolia/pools/0x0a1d695bd7eaba89edecf9a3cd9d969058d6f012?embed=1&info=0&swaps=1&grayscale=1&light_chart=0" frameBorder="0" allow="clipboard-write" allowFullScreen></iframe>
-      </div>
+      </div> */}
     </>
   );
 }
