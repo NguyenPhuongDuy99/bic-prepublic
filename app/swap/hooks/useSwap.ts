@@ -7,8 +7,7 @@ import {
 } from "wagmi";
 import { useQueryClient, UseQueryOptions } from "@tanstack/react-query";
 import { getExplorerLink } from "../../../lib/utils";
-import { arbitrumSepolia, unichainSepolia } from "viem/chains";
-import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
+import { DEFAULT_CHAIN, DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 import { UniswapRouterABI } from "../abis/uniswapRouter";
 import { TokenList } from "../constants/tokenList";
 import { blobsToCommitments } from "viem";
@@ -96,7 +95,7 @@ import { useApprove } from "./useApprove";
     const swapTxLink =
       swapReceipt &&
       getExplorerLink({
-        chain: unichainSepolia,
+        chain: DEFAULT_CHAIN,
         type: "transaction",
         txHash: swapReceipt.transactionHash,
       });

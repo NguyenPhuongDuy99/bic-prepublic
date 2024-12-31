@@ -7,8 +7,7 @@ import {
 } from "wagmi";
 import { useQueryClient, UseQueryOptions } from "@tanstack/react-query";
 import { getExplorerLink } from "../../../lib/utils";
-import { unichainSepolia } from "viem/chains";
-import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
+import { DEFAULT_CHAIN, DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 import { ERC20ABI } from "../abis/ERC20";
 import { maxUint256, parseEther } from "viem";
 import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
@@ -64,7 +63,7 @@ export function useApprove(
   const approveTxLink =
     approveReceipt &&
     getExplorerLink({
-      chain: unichainSepolia,
+      chain: DEFAULT_CHAIN,
       type: "transaction",
       txHash: approveReceipt.transactionHash,
     });

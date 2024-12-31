@@ -17,7 +17,7 @@ import { useApprove } from "../hooks/useApprove";
 import { useGetAllowance } from "../hooks/useGetAllowance";
 import { useGetCurrentLF } from "../hooks/useGetCurrentLF";
 import { THRESHOLD } from "../constants/config";
-import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
+import { DEFAULT_CHAINID, EVM_CONTRACT, STORAGE_LOCATION } from "../constants/contractAddress";
 import { AddToken } from "./AddToken";
 import { useGetPairReserves } from "../hooks/useGetPairReserves";
 import { useGetPair } from "../hooks/useGetPair";
@@ -148,19 +148,22 @@ export function Swap() {
     (async () => {
       const prePublicData = await client.getStorageAt({
         address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
-        slot: toHex(fromHex('0xd959cca23720948e5f992e1bef099a518994cc8b384c796f2b25ba30718fb300', 'bigint') + BigInt(9))
+        slot: toHex(fromHex(STORAGE_LOCATION, 'bigint') + BigInt(9))
       })
       const minSwapBackData = await client.getStorageAt({
         address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
-        slot: toHex(fromHex('0xd959cca23720948e5f992e1bef099a518994cc8b384c796f2b25ba30718fb300', 'bigint') + BigInt(5))
+        slot: toHex(fromHex(STORAGE_LOCATION, 'bigint') + BigInt(5))
       })
       setMinSwapBack((Number(formatUnits(fromHex(minSwapBackData!, 'bigint'), 18)) / 1000000).toFixed(2).toString())
       setPrePublic(Boolean(Number(prePublicData?.slice(24,26))));
 
       const lfStartTime = await client.getStorageAt({
         address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
-        slot: toHex(fromHex('0xd959cca23720948e5f992e1bef099a518994cc8b384c796f2b25ba30718fb300', 'bigint') + BigInt(0))
+        slot: toHex(fromHex(STORAGE_LOCATION, 'bigint') + BigInt(0))
       })
+
+      console.log('pre-public', Boolean(Number(prePublicData?.slice(24,26))), prePublicData)
+      console.log('start time', fromHex(lfStartTime as Hex, 'bigint'), lfStartTime)
     })()
   }, [])
 
