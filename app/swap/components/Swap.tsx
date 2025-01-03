@@ -41,12 +41,12 @@ export function Swap() {
   const {
     whitelistCategory
   } = useGetWhitelistCategory({
-    address: '0xc85Edb60F3b6967eebbCf673f90D2484Bb9EdAa2'
+    address: address
   }, {
     enabled: Boolean(address)
   })
 
-  console.log('whitelist category', whitelistCategory)
+  // console.log('whitelist category', whitelistCategory)
 
   const {
     roundInfo
