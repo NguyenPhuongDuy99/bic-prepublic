@@ -41,20 +41,22 @@ export function Swap() {
   const {
     whitelistCategory
   } = useGetWhitelistCategory({
-    address: address
+    address: '0xc85Edb60F3b6967eebbCf673f90D2484Bb9EdAa2'
   }, {
     enabled: Boolean(address)
   })
 
-  // console.log('whitelist category', whitelistCategory)
+  console.log('whitelist category', whitelistCategory)
 
   const {
     roundInfo
   } = useGetPrePublicRound({
-    category: whitelistCategory
+    category: BigInt(1)
   }, {
     enabled: Boolean(whitelistCategory)
   })
+
+  console.log('round 1', roundInfo)
 
   // get pair reserves
 
@@ -172,10 +174,10 @@ export function Swap() {
       //   slot: keccak256(encodePacked(['address', 'bytes32'], [address!, toHex(fromHex(STORAGE_LOCATION, 'bigint') + BigInt(10))]))
       // })
 
-      // console.log('currentChainId', currentChainId)
-      // console.log('pair', '0x' + pair?.slice(26))
-      // console.log('pre-public', Boolean(Number(prePublicData?.slice(24,26))), prePublicData)
-      // console.log('start time', fromHex(lfStartTime as Hex, 'bigint'), lfStartTime)
+      console.log('currentChainId', whitelistCategory)
+      console.log('pair', '0x' + pair?.slice(26))
+      console.log('pre-public', Boolean(Number(prePublicData?.slice(24,26))), prePublicData)
+      console.log('start time', fromHex(lfStartTime as Hex, 'bigint'), lfStartTime)
     })()
   }, [address])
 

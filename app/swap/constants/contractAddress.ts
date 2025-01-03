@@ -16,8 +16,8 @@ export const EVM_CONTRACT: { [key: string]: {[key: string]: `0x${string}`} } = {
     },
     42161: {
         UniswapRouter: '0x4752ba5DBc23f44D87826276BF6Fd6b1C372aD24',
-        BTest: '0xF76c65b6557F5491fF64E75513a68af7C7Cc4270',
-        Pair: '0x9e39b8ef87daabb097794b407a89694a9340041d'
+        BTest: '0x3A8f583b44fC86C32C192A377cb5e861310f869D',
+        Pair: '0x43299f1147294c689d72785faeb3bb1d0b81a379'
     },
 }
 
