@@ -343,9 +343,9 @@ export function Swap() {
           <ExternalLink icon={true} href={`https://arbiscan.io/token/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}`}>Accumulated Liquidity Position</ExternalLink>
         </div>
       </div>
-      {/* <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]" style={{ height: '1000px'}}>
-      <iframe height="100%" width="100%" id="geckoterminal-embed" title="GeckoTerminal Embed" src="https://www.geckoterminal.com/unichain-sepolia/pools/0xe266048e8f5a1799fc1839c267293d6930a99cfb?embed=1&info=0&swaps=1&grayscale=1&light_chart=0" frameBorder="0" allow="clipboard-write" allowFullScreen></iframe>
-      </div> */}
+      <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]" style={{ height: '1000px'}}>
+        <iframe height="100%" width="100%" id="geckoterminal-embed" title="GeckoTerminal Embed" src="https://www.geckoterminal.com/arbitrum/pools/0x43299f1147294c689d72785faeb3bb1d0b81a379?embed=1&info=0&swaps=1&grayscale=1&light_chart=0" frameBorder="0" allow="clipboard-write" allowFullScreen></iframe>
+      </div>
     </>
   );
 }
