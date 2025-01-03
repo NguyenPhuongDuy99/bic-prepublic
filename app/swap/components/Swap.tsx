@@ -5,7 +5,7 @@ import { TokenSelect } from "@/components/TokenSelect";
 import { Button, Label } from "@/components/ui";
 import { formatTime, isNativeToken, TokenInfo } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { createPublicClient, formatUnits, fromHex, Hex, http, parseUnits, toHex } from "viem";
+import { createPublicClient, encodePacked, formatUnits, fromHex, Hex, http, keccak256, parseUnits, toBytes, toHex } from "viem";
 import { useAccount, useBalance, useChainId } from "wagmi";
 import { useDebounceValue } from "usehooks-ts";
 import { TokenInput } from "@/components/TokenInput";
@@ -17,13 +17,11 @@ import { useApprove } from "../hooks/useApprove";
 import { useGetAllowance } from "../hooks/useGetAllowance";
 import { useGetCurrentLF } from "../hooks/useGetCurrentLF";
 import { THRESHOLD } from "../constants/config";
-import { DEFAULT_CHAINID, EVM_CONTRACT, STORAGE_LOCATION } from "../constants/contractAddress";
+import { DEFAULT_CHAIN, DEFAULT_CHAINID, EVM_CONTRACT, STORAGE_LOCATION } from "../constants/contractAddress";
 import { AddToken } from "./AddToken";
 import { useGetPairReserves } from "../hooks/useGetPairReserves";
-import { useGetPair } from "../hooks/useGetPair";
 import { useGetWhitelistCategory } from "../hooks/useGetWhitelistCategory";
 import { useGetPrePublicRound } from "../hooks/useGetPrepublicRound";
-import { unichainSepolia } from "viem/chains";
 
 export function Swap() {
   const { address } = useAccount();
@@ -31,7 +29,7 @@ export function Swap() {
   const now = Math.floor(new Date().getTime() / 1000)
 
   const client = createPublicClient({
-    chain: unichainSepolia,
+    chain: DEFAULT_CHAIN,
     transport: http()
   })
 
@@ -47,6 +45,8 @@ export function Swap() {
   }, {
     enabled: Boolean(address)
   })
+
+  // console.log('whitelist category', whitelistCategory)
 
   const {
     roundInfo
@@ -162,10 +162,22 @@ export function Swap() {
         slot: toHex(fromHex(STORAGE_LOCATION, 'bigint') + BigInt(0))
       })
 
-      console.log('pre-public', Boolean(Number(prePublicData?.slice(24,26))), prePublicData)
-      console.log('start time', fromHex(lfStartTime as Hex, 'bigint'), lfStartTime)
+      const pair = await client.getStorageAt({
+        address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
+        slot: toHex(fromHex(STORAGE_LOCATION, 'bigint') + BigInt(8))
+      })
+
+      // const category = await client.getStorageAt({
+      //   address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
+      //   slot: keccak256(encodePacked(['address', 'bytes32'], [address!, toHex(fromHex(STORAGE_LOCATION, 'bigint') + BigInt(10))]))
+      // })
+
+      // console.log('currentChainId', currentChainId)
+      // console.log('pair', '0x' + pair?.slice(26))
+      // console.log('pre-public', Boolean(Number(prePublicData?.slice(24,26))), prePublicData)
+      // console.log('start time', fromHex(lfStartTime as Hex, 'bigint'), lfStartTime)
     })()
-  }, [])
+  }, [address])
 
   return (
     <>
@@ -173,7 +185,7 @@ export function Swap() {
         <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
           
           <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
-            <ExternalLink className="w-full" icon={true} href={`https://sepolia.uniscan.xyz/token/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}`}>
+            <ExternalLink className="w-full" icon={true} href={`https://arbiscan.io/token/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}`}>
               <Label>BTEST - ETH in Uniswap V2</Label>
             </ExternalLink>
             <div className="w-full flex flex-col sm:flex-row justify-start items-center my-2 gap-2">
@@ -319,19 +331,19 @@ export function Swap() {
             </div>
           } */}
           <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-            <ExternalLink icon={true} href={`https://sepolia.uniscan.xyz/address/${EVM_CONTRACT[DEFAULT_CHAINID].BTest}`}><Label className="my-4">Accumulated LF: {Number(formatUnits(accumulatedLF ? accumulatedLF.value : BigInt(0), accumulatedLF ? accumulatedLF?.decimals: 18)).toFixed(4)} {accumulatedLF?.symbol}</Label></ExternalLink>
+            <ExternalLink icon={true} href={`https://arbiscan.io/address/${EVM_CONTRACT[DEFAULT_CHAINID].BTest}`}><Label className="my-4">Accumulated LF: {Number(formatUnits(accumulatedLF ? accumulatedLF.value : BigInt(0), accumulatedLF ? accumulatedLF?.decimals: 18)).toFixed(4)} {accumulatedLF?.symbol}</Label></ExternalLink>
             
             { fromToken?.symbol != 'ETH' && accumulatedLF &&
               THRESHOLD.MinSwapBackAndLiquify < accumulatedLF.value && 
             <Label className="flex-[5]" style={{ color: 'red' }}>Over swap back and liquify threshold 88.8M BTEST</Label> }
           </div>
           <Divider className="my-4" />
-          <ExternalLink icon={true} href={`https://sepolia.uniscan.xyz/token/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}`}>Accumulated Liquidity Position</ExternalLink>
+          <ExternalLink icon={true} href={`https://arbiscan.io/token/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}`}>Accumulated Liquidity Position</ExternalLink>
         </div>
       </div>
-      <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]" style={{ height: '1000px'}}>
+      {/* <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]" style={{ height: '1000px'}}>
       <iframe height="100%" width="100%" id="geckoterminal-embed" title="GeckoTerminal Embed" src="https://www.geckoterminal.com/unichain-sepolia/pools/0xe266048e8f5a1799fc1839c267293d6930a99cfb?embed=1&info=0&swaps=1&grayscale=1&light_chart=0" frameBorder="0" allow="clipboard-write" allowFullScreen></iframe>
-      </div>
+      </div> */}
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { Chain, Hex } from "viem";
-import { unichainSepolia } from "viem/chains";
+import { arbitrum, unichainSepolia } from "viem/chains";
 
 export const NULL_ADDRESS: `0x${string}` = '0x0000000000000000000000000000000000000000'
 
@@ -15,14 +15,14 @@ export const EVM_CONTRACT: { [key: string]: {[key: string]: `0x${string}`} } = {
         Pair: '0xe266048E8f5A1799fc1839C267293d6930a99Cfb'
     },
     42161: {
-        UniswapRouter: '0x920b806E40A00E02E7D2b94fFc89860fDaEd3640',
-        BTest: '0x8955Cea6d5d9a7eD18C44cF634dCd1b2F64af783',
-        Pair: '0xe266048E8f5A1799fc1839C267293d6930a99Cfb'
+        UniswapRouter: '0x4752ba5DBc23f44D87826276BF6Fd6b1C372aD24',
+        BTest: '0xF76c65b6557F5491fF64E75513a68af7C7Cc4270',
+        Pair: '0x9e39b8ef87daabb097794b407a89694a9340041d'
     },
 }
 
-export const DEFAULT_CHAINID: string = '1301';
+export const DEFAULT_CHAINID: string = '42161';
 
-export const DEFAULT_CHAIN: Chain = unichainSepolia;
+export const DEFAULT_CHAIN: Chain = arbitrum;
 
 export const STORAGE_LOCATION: Hex = '0xd959cca23720948e5f992e1bef099a518994cc8b384c796f2b25ba30718fb300'

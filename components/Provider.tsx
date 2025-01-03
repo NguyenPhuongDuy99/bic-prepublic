@@ -10,7 +10,7 @@ import {
 } from "@rainbow-me/rainbowkit";
 import { ThemeProvider, useTheme } from "next-themes";
 import { config } from "@/lib/wagmi";
-import { unichainSepolia } from "viem/chains";
+import { DEFAULT_CHAIN } from "@/app/swap/constants/contractAddress";
 
 const queryClient = new QueryClient();
 
@@ -35,7 +35,7 @@ function RainbowProvider({ children }: { children: React.ReactNode }) {
   return (
     <RainbowKitProvider
       theme={resolvedTheme === "dark" ? darkTheme() : lightTheme()}
-      initialChain={unichainSepolia}
+      initialChain={DEFAULT_CHAIN}
       showRecentTransactions={true}
     >
       {children}
