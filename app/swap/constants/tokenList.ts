@@ -11,8 +11,8 @@ export const TokenList: TokenInfo[] = [
     },
     {
         address: EVM_CONTRACT[DEFAULT_CHAINID].BTest,
-        symbol: 'BTEST',
-        name: 'BTest',
+        symbol: 'B139',
+        name: 'B139',
         decimals: 18,
         logoUrl: 'https://raw.githubusercontent.com/across-protocol/frontend/master/src/assets/token-logos/eth.svg',
     }

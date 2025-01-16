@@ -1,35 +1,40 @@
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { useChainId, useReadContract } from "wagmi";
-import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 import { BICABI } from "../abis/BIC";
+import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 
-export function useGetPair(
+interface CoolDownParams {
+  address: `0x${string}` | undefined
+}
+
+export function useGetCoolDown(
+  params: CoolDownParams,
   queryOptions?: Omit<UseQueryOptions, "queryKey" | "queryFn">
 ) {
   const currentChainId = useChainId()
 
   const enabled = Boolean(
-    (queryOptions?.enabled ?? true)
+    params.address && (queryOptions?.enabled ?? true)
   )
   
   const {
-    data: pair,
+    data: coolDown,
     queryKey,
     ...rest
   } = useReadContract({
     abi: BICABI,
     address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
-    functionName: "uniswapV2Pair",
+    functionName: "coolDown",
     chainId: currentChainId,
-    args: [],
+    args: [params.address!],
     query: {
       enabled
     }
   });
 
   return {
-    pairQueryKey: queryKey,
-    pair: pair,
+    coolDownQueryKey: queryKey,
+    coolDown: coolDown,
     ...rest,
   };
 }

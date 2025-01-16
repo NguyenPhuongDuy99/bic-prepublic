@@ -25,7 +25,7 @@ export const AddToken = ({
         options: {
           address: EVM_CONTRACT[DEFAULT_CHAINID].BTest,
           decimals: 18,
-          symbol: 'BTEST',
+          symbol: 'B139',
         },
       })
   
@@ -44,7 +44,7 @@ export const AddToken = ({
       <Button
         onClick={addToken}
         variant="accent"
-      >Add BTEST</Button>
+      >Add B139</Button>
     </div>
   );
 };
