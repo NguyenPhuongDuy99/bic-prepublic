@@ -24,6 +24,9 @@ import { useGetPair } from "../hooks/useGetPair";
 import { useGetWhitelistCategory } from "../hooks/useGetWhitelistCategory";
 import { useGetPrePublicRound } from "../hooks/useGetPrepublicRound";
 import { unichainSepolia } from "viem/chains";
+import { useGetPrePublic } from "../hooks/useGetPrePublic";
+import { useGetMinSwapAmount } from "../hooks/useGetMinSwapAmount";
+import { useGetCoolDown } from "../hooks/useGetCoolDown";
 
 export function Swap() {
   const { address } = useAccount();
@@ -36,10 +39,15 @@ export function Swap() {
   })
 
   // min swap back and liquify
-  const [minSwapBack, setMinSwapBack] = useState<string>('88.8')
+  const {
+    minSwapBack
+  } = useGetMinSwapAmount({})
 
   // get pre-public info
-  const [prePublic, setPrePublic] = useState<boolean>(false)
+  const {
+    prePublic
+  } = useGetPrePublic({})
+
   const {
     whitelistCategory
   } = useGetWhitelistCategory({
@@ -56,7 +64,24 @@ export function Swap() {
     enabled: Boolean(whitelistCategory)
   })
 
+  console.log('round info', roundInfo)
+
+  // get cool down
+  const {
+    coolDown
+  } = useGetCoolDown({
+    address: address
+  })
+
+  console.log('cool down', coolDown)
+
   // get pair reserves
+
+  const {
+    pair
+  } = useGetPair({})
+
+  console.log('pair', pair)
 
   const {
     reserves,
@@ -144,60 +169,42 @@ export function Swap() {
     allowance: allowance ? allowance : BigInt(0)
   })
 
-  useEffect(() => {
-    (async () => {
-      const prePublicData = await client.getStorageAt({
-        address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
-        slot: toHex(fromHex(STORAGE_LOCATION, 'bigint') + BigInt(9))
-      })
-      const minSwapBackData = await client.getStorageAt({
-        address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
-        slot: toHex(fromHex(STORAGE_LOCATION, 'bigint') + BigInt(5))
-      })
-      setMinSwapBack((Number(formatUnits(fromHex(minSwapBackData!, 'bigint'), 18)) / 1000000).toFixed(2).toString())
-      setPrePublic(Boolean(Number(prePublicData?.slice(24,26))));
-
-      const lfStartTime = await client.getStorageAt({
-        address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
-        slot: toHex(fromHex(STORAGE_LOCATION, 'bigint') + BigInt(0))
-      })
-
-      console.log('pre-public', Boolean(Number(prePublicData?.slice(24,26))), prePublicData)
-      console.log('start time', fromHex(lfStartTime as Hex, 'bigint'), lfStartTime)
-    })()
-  }, [])
-
   return (
     <>
       <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
         <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
           
           <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
-            <ExternalLink className="w-full" icon={true} href={`https://sepolia.uniscan.xyz/token/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}`}>
-              <Label>BTEST - ETH in Uniswap V2</Label>
-            </ExternalLink>
             <div className="w-full flex flex-col sm:flex-row justify-start items-center my-2 gap-2">
-              <Label className="flex-[5]">Pool Reserves:</Label>
-              <Label className="flex-[5]">
-                {`${Number(formatUnits(reserves ? reserves[0] : BigInt(0), 18)).toFixed(4)} ${Number(tokens[0]) > Number(tokens[1]) ? "BTEST" : "ETH"} - 
-                  ${Number(formatUnits(reserves ? reserves[1] : BigInt(0), 18)).toFixed(4)} ${Number(tokens[1]) > Number(tokens[0]) ? "BTEST" : "ETH"}
+              <Label className="flex-[5] text-md">Pool Reserves:</Label>
+            </div>
+            <div className="w-full flex flex-col sm:flex-row justify-start items-center my-2 gap-2">
+              <Label className="flex-[5] text-lg">
+                {`${Number(formatUnits(reserves ? reserves[0] : BigInt(0), 18)).toFixed(4)} ${Number(tokens[0]) > Number(tokens[1]) ? "B139" : "ETH"} - 
+                  ${Number(formatUnits(reserves ? reserves[1] : BigInt(0), 18)).toFixed(4)} ${Number(tokens[1]) > Number(tokens[0]) ? "B139" : "ETH"}
                 `}
               </Label>
             </div>
+            <div className="w-full flex flex-col sm:flex-row justify-start items-center my-2 gap-2">
+              <ExternalLink className="w-full" icon={true} href={`https://sepolia.uniscan.xyz/token/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}`}>
+                <Label>B139 - ETH in Uniswap V2</Label>
+              </ExternalLink>
+            </div>
+            
           </div>
           <AddToken />
         </div>
       </div>
       <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
         <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
-          <Label>Context of BTest token's config </Label>
+          <Label>Context of B139 token's config </Label>
           <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-            <Label className="flex-[5]">Min Swap Back and Liquify: {minSwapBack}M BTEST</Label>
+            <Label className="flex-[5]">Min Swap Back and Liquify: {formatUnits(minSwapBack ?? BigInt(0), 24)}M BTEST</Label>
             <Label className="flex-[5]"></Label>
           </div>
           <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-            <Label className="flex-[5]">Swap ETH - BTEST LF: 0%</Label>
-            <Label className="flex-[5]">Swap BTEST - ETH LF: {Number(currentLF) / 100}%</Label>
+            <Label className="flex-[5]">Swap ETH - B139 LF: 0%</Label>
+            <Label className="flex-[5]">Swap B139 - ETH LF: {Number(currentLF) / 100}%</Label>
           </div>
         </div>
         <Divider className="my-4" />
@@ -213,7 +220,10 @@ export function Swap() {
               </div>
               <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
                 <Label className="flex-[5]">Cool down: {roundInfo.coolDown} seconds</Label>
-                <Label className="flex-[5]">Max Amount Per Buy: {(Number(formatUnits(roundInfo.maxAmountPerBuy, 18)) / 1000000).toFixed(2)}M BTEST</Label>
+                <Label className="flex-[5]">Max Amount Per Buy: {(Number(formatUnits(roundInfo.maxAmountPerBuy, 18)) / 1000000).toFixed(2)}M B139</Label>
+              </div>
+              <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
+                { coolDown && coolDown > BigInt(0) && <Label className="flex-[5]">Your last buy: {formatTime(Number(coolDown))}</Label>}
               </div>
             </div>
             <Divider className="my-4" />

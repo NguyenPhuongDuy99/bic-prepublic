@@ -24,7 +24,7 @@ export function useGetPrePublicRound(
   } = useReadContract({
     abi: BICABI,
     address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
-    functionName: "getPrePublicRound",
+    functionName: "prePublicRounds",
     chainId: currentChainId,
     args: [params.category!],
     query: {
@@ -34,7 +34,13 @@ export function useGetPrePublicRound(
 
   return {
     rundInfoQueryKey: queryKey,
-    roundInfo: roundInfo,
+    roundInfo: roundInfo ? {
+      category: roundInfo[0],
+      startTime: roundInfo[1],
+      endTime: roundInfo[2],
+      coolDown: roundInfo[3],
+      maxAmountPerBuy: roundInfo[4]
+    } : undefined,
     ...rest,
   };
 }

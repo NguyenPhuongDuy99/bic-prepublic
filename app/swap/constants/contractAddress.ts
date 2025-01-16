@@ -6,8 +6,8 @@ export const NULL_ADDRESS: `0x${string}` = '0x0000000000000000000000000000000000
 export const EVM_CONTRACT: { [key: string]: {[key: string]: `0x${string}`} } = {
     1301: {
         UniswapRouter: '0x920b806E40A00E02E7D2b94fFc89860fDaEd3640',
-        BTest: '0x8955Cea6d5d9a7eD18C44cF634dCd1b2F64af783',
-        Pair: '0xe266048E8f5A1799fc1839C267293d6930a99Cfb'
+        BTest: '0xD8291CbF9130810a6C5FdbF954ef19a77c362354',
+        Pair: '0xDdaEB7a97cAC324Be0F53799EC6a822FF90b17d7'
     },
     421614: {
         UniswapRouter: '0x920b806E40A00E02E7D2b94fFc89860fDaEd3640',

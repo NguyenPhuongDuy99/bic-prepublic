@@ -3,7 +3,7 @@ import { useChainId, useReadContract } from "wagmi";
 import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 import { BICABI } from "../abis/BIC";
 
-export function useGetPair(
+export function useGetMinSwapAmount(
   queryOptions?: Omit<UseQueryOptions, "queryKey" | "queryFn">
 ) {
   const currentChainId = useChainId()
@@ -13,13 +13,13 @@ export function useGetPair(
   )
   
   const {
-    data: pair,
+    data: minSwapBack,
     queryKey,
     ...rest
   } = useReadContract({
     abi: BICABI,
     address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
-    functionName: "uniswapV2Pair",
+    functionName: "minSwapBackAmount",
     chainId: currentChainId,
     args: [],
     query: {
@@ -28,8 +28,8 @@ export function useGetPair(
   });
 
   return {
-    pairQueryKey: queryKey,
-    pair: pair,
+    minSwapBackQueryKey: queryKey,
+    minSwapBack: minSwapBack,
     ...rest,
   };
 }
