@@ -215,15 +215,15 @@ export function Swap() {
             <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
               <Label>Your Pre-Public Round {roundInfo.category}</Label>
               <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-                <Label className="flex-[5]">Start At: {formatTime(Number(roundInfo.startTime) * 1000)}</Label>
-                <Label className="flex-[5]">End At: {formatTime(Number(roundInfo.endTime) * 1000)}</Label>
+                <Label className="flex-[5]">Start At: {formatTime(Number(roundInfo.startTime) * 1000)} (UTC +7)</Label>
+                <Label className="flex-[5]">End At: {formatTime(Number(roundInfo.endTime) * 1000)} (UTC +7)</Label>
               </div>
               <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
                 <Label className="flex-[5]">Cool down: {roundInfo.coolDown} seconds</Label>
                 <Label className="flex-[5]">Max Amount Per Buy: {(Number(formatUnits(roundInfo.maxAmountPerBuy, 18)) / 1000000).toFixed(2)}M B139</Label>
               </div>
               <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-                { coolDown && coolDown > BigInt(0) && <Label className="flex-[5]">Your last buy: {formatTime(Number(coolDown))}</Label>}
+                { coolDown && coolDown > BigInt(0) && <Label className="flex-[5]">Your last buy: {formatTime(Number(coolDown))} (UTC +7)</Label>}
               </div>
             </div>
             <Divider className="my-4" />
@@ -292,7 +292,7 @@ export function Swap() {
                   
                   <Button
                     onClick={() => swapAsync()}
-                    disabled={!(outAmounts && toToken) || swapPending || approvePending}
+                    disabled={!(outAmounts && toToken) || swapPending || approvePending || (prePublic && roundInfo && (now < roundInfo.startTime || now > roundInfo.endTime))}
                     className="w-full"
                     variant="accent"
                   >
@@ -378,7 +378,7 @@ export function Swap() {
         </div>
       </div>
       <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]" style={{ height: '1000px'}}>
-        <iframe height="100%" width="100%" id="geckoterminal-embed" title="GeckoTerminal Embed" src="https://www.geckoterminal.com/arbitrum/pools/0x43299f1147294c689d72785faeb3bb1d0b81a379?embed=1&info=0&swaps=1&grayscale=1&light_chart=0" frameBorder="0" allow="clipboard-write" allowFullScreen></iframe>
+        <iframe height="100%" width="100%" id="geckoterminal-embed" title="GeckoTerminal Embed" src={`https://www.geckoterminal.com/arbitrum/pools/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}?embed=1&info=0&swaps=1&grayscale=1&light_chart=0`} frameBorder="0" allow="clipboard-write" allowFullScreen></iframe>
       </div>
     </>
   );
