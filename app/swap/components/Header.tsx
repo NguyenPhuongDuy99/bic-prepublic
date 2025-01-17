@@ -20,7 +20,7 @@ export const Header = ({
       {...props}
     >
       <div className="relative flex items-center justify-start gap-2">
-        <h2 className="text-text font-extralight text-xl">Swap Testing</h2>
+        <h2 className="text-text font-extralight text-xl">B139 Pre-Public</h2>
       </div>
 
       <InitRole />

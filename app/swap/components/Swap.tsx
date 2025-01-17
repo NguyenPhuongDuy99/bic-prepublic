@@ -26,6 +26,7 @@ import { unichainSepolia } from "viem/chains";
 import { useGetPrePublic } from "../hooks/useGetPrePublic";
 import { useGetMinSwapAmount } from "../hooks/useGetMinSwapAmount";
 import { useGetCoolDown } from "../hooks/useGetCoolDown";
+import { useGetPair } from "../hooks/useGetPair";
 
 export function Swap() {
   const { address } = useAccount();
@@ -176,42 +177,38 @@ export function Swap() {
         <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
           
           <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
-            <div className="w-full flex flex-col sm:flex-row justify-start items-center my-2 gap-2">
+            <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
               <Label className="flex-[5] text-md">Pool Reserves:</Label>
             </div>
-            <div className="w-full flex flex-col sm:flex-row justify-start items-center my-2 gap-2">
+            <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
               <Label className="flex-[5] text-lg">
                 {`${Number(formatUnits(reserves ? reserves[0] : BigInt(0), 18)).toFixed(4)} ${Number(tokens[0]) > Number(tokens[1]) ? "B139" : "ETH"} - 
                   ${Number(formatUnits(reserves ? reserves[1] : BigInt(0), 18)).toFixed(4)} ${Number(tokens[1]) > Number(tokens[0]) ? "B139" : "ETH"}
                 `}
               </Label>
+              <AddToken />
             </div>
-            <div className="w-full flex flex-col sm:flex-row justify-start items-center my-2 gap-2">
-              <ExternalLink className="w-full" icon={true} href={`https://sepolia.uniscan.xyz/token/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}`}>
+            <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
+              <ExternalLink className="flex-5" icon={true} href={`https://sepolia.uniscan.xyz/token/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}`}>
                 <Label>B139 - ETH in Uniswap V2</Label>
               </ExternalLink>
             </div>
-            
+            <div className="w-full flex flex-col sm:flex-row justify-start items-center my-4 gap-2">
+              <Label className="flex-[5]">Min Swap Back and Liquify</Label>
+              <Label className="flex-[5]">Swap ETH - B139 LF</Label>
+              <Label className="flex-[5]">Swap B139 - ETH LF</Label>
+            </div>
+            <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2 text-bold">
+              <Label className="flex-[5]">{formatUnits(minSwapBack ?? BigInt(0), 24)}M B139</Label>
+              <Label className="flex-[5]">0%</Label>
+              <Label className="flex-[5]">{Number(currentLF) / 100}%</Label>
+            </div>
           </div>
-          <AddToken />
         </div>
       </div>
       <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
         <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
-          <Label>Context of B139 token's config </Label>
-          <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-            <Label className="flex-[5]">Min Swap Back and Liquify: {formatUnits(minSwapBack ?? BigInt(0), 24)}M BTEST</Label>
-            <Label className="flex-[5]"></Label>
-          </div>
-          <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-            <Label className="flex-[5]">Swap ETH - B139 LF: 0%</Label>
-            <Label className="flex-[5]">Swap B139 - ETH LF: {Number(currentLF) / 100}%</Label>
-          </div>
-        </div>
-        <Divider className="my-4" />
-
-        <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
-          <Label className="w-full" style={{ color: 'orange' }}>{prePublic ? "Pre Public Phase" : "Public Phase"}</Label>
+          <Label className="w-full text-lg" style={{ color: 'orange' }}>{prePublic ? "Pre Public Phase" : "Public Phase"}</Label>
           {prePublic ? roundInfo ? (<>
             <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
               <Label>Your Pre-Public Round {roundInfo.category}</Label>
@@ -229,59 +226,97 @@ export function Swap() {
             </div>
             <Divider className="my-4" />
           </>) : (
-            <Label className="w-full" style={{ color: "red" }}>You are not in whitelist. Please wait for public phase!</Label>
+            <Label className="w-full text-md" style={{ color: "red" }}>You are not in whitelist. Please wait for public phase!</Label>
           ) : (<></>)
           }
-        
-          <div className="flex flex-col gap-4 w-full">
-            <Label htmlFor="origin-chain">From</Label>
-            <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-              <TokenSelect
-                className="flex-[3]"
-                tokens={TokenList}
-                onTokenChange={(token) => setFromToken(token)}
-                token={fromToken}
-              />
+          <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
+            <div className="flex flex-col gap-4 w-full">
+              <Label htmlFor="origin-chain">From</Label>
+              <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
+                <TokenSelect
+                  className="flex-[3]"
+                  tokens={TokenList}
+                  onTokenChange={(token) => setFromToken(token)}
+                  token={fromToken}
+                />
 
-              <TokenInput
-                className="flex-[5]"
-                balance={inputBalance}
-                id="input-amount"
-                placeholder="Enter amount"
-                type="number"
-                value={inputAmount}
-                onMax={onMax}
-                onChange={(e) => setInputAmount(e.currentTarget.value)}
-              />
-            </div>
+                <TokenInput
+                  className="flex-[5]"
+                  balance={inputBalance}
+                  id="input-amount"
+                  placeholder="Enter amount"
+                  type="number"
+                  value={inputAmount}
+                  onMax={onMax}
+                  onChange={(e) => setInputAmount(e.currentTarget.value)}
+                />
+              </div>
 
-            <Divider className="my-2" />
+              <Divider className="my-2" />
 
-            <Label htmlFor="destination-chain">To</Label>
-            <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-              <TokenSelect
-                className="flex-[3]"
-                tokens={TokenList}
-                onTokenChange={setToToken}
-                token={toToken}
-              />
-              <TokenInput
-                className="flex-[5]"
-                balance={outputBalance}
-                id="input-amount"
-                placeholder="Output amount"
-                type="number"
-                readOnly={true}
-                defaultValue={
-                  Number(formatUnits(outAmounts ? outAmounts[1] : BigInt(0), toToken ? toToken.decimals : 18)).toFixed(8)
-                }
-              />
+              <Label htmlFor="destination-chain">To</Label>
+              <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
+                <TokenSelect
+                  className="flex-[3]"
+                  tokens={TokenList}
+                  onTokenChange={setToToken}
+                  token={toToken}
+                />
+                <TokenInput
+                  className="flex-[5]"
+                  balance={outputBalance}
+                  id="input-amount"
+                  placeholder="Output amount"
+                  type="number"
+                  readOnly={true}
+                  defaultValue={
+                    Number(formatUnits(outAmounts ? outAmounts[1] : BigInt(0), toToken ? toToken.decimals : 18)).toFixed(8)
+                  }
+                />
+              </div>
+              <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
+                <div className="flex flex-col items-start gap-2 w-full">
+                  { roundInfo && prePublic && (now < roundInfo.startTime || now > roundInfo.endTime) && 
+                    <Label className="flex-[5]" style={{ color: 'red' }}>Your pre-public round is not active. Please check the round info above!</Label>
+                  }
+                  { roundInfo && prePublic && 
+                        outAmounts && fromToken && fromToken.symbol === 'ETH' && outAmounts[1] > roundInfo.maxAmountPerBuy && <div>
+                      <Label className="flex-[5]" style={{ color: 'red' }}>Over swap max amount per buy in your pre-public round {formatUnits(roundInfo.maxAmountPerBuy, 18)} BTEST</Label>
+                    </div> 
+                  }
+                  {
+                    prePublic && (!roundInfo) && <Label className="w-full" style={{ color: "red" }}>You are not in whitelist. Please wait for public phase!</Label>
+                  }
+                  
+                  <Button
+                    onClick={() => swapAsync()}
+                    disabled={!(outAmounts && toToken) || swapPending || approvePending}
+                    className="w-full"
+                    variant="accent"
+                  >
+                    {
+                      approvePending ? "Approving" :
+                          swapPending
+                            ? "Executing..."
+                              : "Swap"
+                    }
+                  </Button>
+
+                  <div className="flex gap-2">
+                    {swapTxLink && (
+                      <ExternalLink icon href={swapTxLink}>
+                        Swap Tx
+                      </ExternalLink>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
         <Divider className="my-4" />
 
-        <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
+        {/* <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
           { roundInfo && prePublic && (now < roundInfo.startTime || now > roundInfo.endTime) && 
             <Label className="flex-[5]" style={{ color: 'red' }}>Your pre-public round is not active. Please check the round info above!</Label>
           }
@@ -317,7 +352,7 @@ export function Swap() {
             )}
           </div>
         </div>
-        <Divider className="my-4" />
+        <Divider className="my-4" /> */}
 
         <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
           <Label style={{ color: 'orange' }}>Warning over swap back and liquify</Label>
