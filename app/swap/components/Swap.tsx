@@ -147,6 +147,8 @@ export function Swap() {
     enabled: Boolean(debouncedInputAmount) && Boolean(path.length) && Boolean(fromToken)
   })
 
+  console.log('amount out', outAmounts)
+
   const { allowance } = useGetAllowance({ owner: address })
 
   function onMax() {

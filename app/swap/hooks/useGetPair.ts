@@ -2,6 +2,7 @@ import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { useChainId, useReadContract } from "wagmi";
 import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 import { BICABI } from "../abis/BIC";
+import { UniswapRouterABI } from "../abis/uniswapRouter";
 
 export function useGetPair(
   queryOptions?: Omit<UseQueryOptions, "queryKey" | "queryFn">
@@ -26,6 +27,21 @@ export function useGetPair(
       enabled
     }
   });
+
+  const {
+    data: WETH
+  } = useReadContract({
+    abi: UniswapRouterABI,
+    address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].UniswapRouter,
+    functionName: "WETH",
+    chainId: currentChainId,
+    args: [],
+    query: {
+      enabled
+    }
+  });
+
+  console.log('WETH', WETH)
 
   return {
     pairQueryKey: queryKey,
