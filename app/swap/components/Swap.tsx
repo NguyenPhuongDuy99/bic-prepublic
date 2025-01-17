@@ -378,7 +378,7 @@ export function Swap() {
         </div>
       </div>
       <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]" style={{ height: '1000px'}}>
-        <iframe height="100%" width="100%" id="geckoterminal-embed" title="GeckoTerminal Embed" src={`https://www.geckoterminal.com/arbitrum/pools/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}?embed=1&info=0&swaps=1&grayscale=1&light_chart=0`} frameBorder="0" allow="clipboard-write" allowFullScreen></iframe>
+        <iframe height="100%" width="100%" id="geckoterminal-embed" title="GeckoTerminal Embed" src={`https://www.geckoterminal.com/${DEFAULT_CHAINID == '1301' ? `unichain-sepolia` : `arbitrum`}/pools/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}?embed=1&info=0&swaps=1&grayscale=1&light_chart=0`} frameBorder="0" allow="clipboard-write" allowFullScreen></iframe>
       </div>
     </>
   );
