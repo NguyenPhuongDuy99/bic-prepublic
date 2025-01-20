@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Swap Testing - Uniswap V2 pair BTEST - WETH",
-  description: "An example app testing swap",
+  title: "B139 Pre-Public",
+  description: "B139 pre-public in DEX",
 };
 
 export default function RootLayout({

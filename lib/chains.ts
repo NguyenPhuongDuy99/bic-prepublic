@@ -52,6 +52,6 @@ export const TESTNET_SUPPORTED_CHAINS = [
   unichainSepolia
 ] as const;
 
-export const ARBITRUM = [unichainSepolia, arbitrum] as const
+export const ARBITRUM = [arbitrum] as const
 
 export const SUPPORTED_CHAINS = ARBITRUM;

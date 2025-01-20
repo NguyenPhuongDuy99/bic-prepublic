@@ -16,13 +16,13 @@ export const EVM_CONTRACT: { [key: string]: {[key: string]: `0x${string}`} } = {
     },
     42161: {
         UniswapRouter: '0x4752ba5DBc23f44D87826276BF6Fd6b1C372aD24',
-        BTest: '0x3A8f583b44fC86C32C192A377cb5e861310f869D',
-        Pair: '0x43299f1147294c689d72785faeb3bb1d0b81a379'
+        BTest: '0xb139400e664144908bF5c9F7a757dC2993eCb139',
+        Pair: '0x428754B0613F5bF494588d80be04C398D7c80457'
     },
 }
 
-export const DEFAULT_CHAINID: string = '1301';
+export const DEFAULT_CHAINID: string = '42161';
 
-export const DEFAULT_CHAIN: Chain = unichainSepolia;
+export const DEFAULT_CHAIN: Chain = arbitrum;
 
 export const STORAGE_LOCATION: Hex = '0xd959cca23720948e5f992e1bef099a518994cc8b384c796f2b25ba30718fb300'

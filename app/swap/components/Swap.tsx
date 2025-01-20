@@ -66,16 +66,18 @@ export function Swap() {
     enabled: Boolean(whitelistCategory)
   })
 
-  console.log('round info', roundInfo)
+  // console.log('round info', roundInfo)
 
   // get cool down
   const {
     coolDown
   } = useGetCoolDown({
     address: address
+  }, {
+    enabled: Boolean(address)
   })
 
-  console.log('cool down', coolDown)
+  // console.log('cool down', coolDown)
 
   // get pair reserves
 
@@ -83,7 +85,7 @@ export function Swap() {
     pair
   } = useGetPair({})
 
-  console.log('pair', pair)
+  // console.log('pair', pair)
 
   const {
     reserves,
@@ -147,7 +149,7 @@ export function Swap() {
     enabled: Boolean(debouncedInputAmount) && Boolean(path.length) && Boolean(fromToken)
   })
 
-  console.log('amount out', outAmounts)
+  // console.log('amount out', outAmounts)
 
   const { allowance } = useGetAllowance({ owner: address })
 
@@ -192,7 +194,7 @@ export function Swap() {
             </div>
             <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
               <ExternalLink className="flex-5" icon={true} href={`https://sepolia.uniscan.xyz/token/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}`}>
-                <Label>B139 - ETH in Uniswap V2</Label>
+                <Label>B139 - ETH Uniswap V2</Label>
               </ExternalLink>
             </div>
             <div className="w-full flex flex-col sm:flex-row justify-start items-center my-4 gap-2">
@@ -223,7 +225,7 @@ export function Swap() {
                 <Label className="flex-[5]">Max Amount Per Buy: {(Number(formatUnits(roundInfo.maxAmountPerBuy, 18)) / 1000000).toFixed(2)}M B139</Label>
               </div>
               <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-                { coolDown && coolDown > BigInt(0) && <Label className="flex-[5]">Your last buy: {formatTime(Number(coolDown))} (UTC +7)</Label>}
+                { coolDown && coolDown > BigInt(0) && <Label className="flex-[5]">Your last buy: {formatTime(Number(coolDown) * 1000)} (UTC +7)</Label>}
               </div>
             </div>
             <Divider className="my-4" />
@@ -304,13 +306,13 @@ export function Swap() {
                     }
                   </Button>
 
-                  <div className="flex gap-2">
+                  {/* <div className="flex gap-2">
                     {swapTxLink && (
                       <ExternalLink icon href={swapTxLink}>
                         Swap Tx
                       </ExternalLink>
                     )}
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
