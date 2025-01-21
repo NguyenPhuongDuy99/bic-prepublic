@@ -21,8 +21,8 @@ export const EVM_CONTRACT: { [key: string]: {[key: string]: `0x${string}`} } = {
     },
 }
 
-export const DEFAULT_CHAINID: string = '42161';
+export const DEFAULT_CHAINID: string = '1301';
 
-export const DEFAULT_CHAIN: Chain = arbitrum;
+export const DEFAULT_CHAIN: Chain = unichainSepolia;
 
 export const STORAGE_LOCATION: Hex = '0xd959cca23720948e5f992e1bef099a518994cc8b384c796f2b25ba30718fb300'
