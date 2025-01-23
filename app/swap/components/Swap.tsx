@@ -27,6 +27,7 @@ import { useGetPrePublic } from "../hooks/useGetPrePublic";
 import { useGetMinSwapAmount } from "../hooks/useGetMinSwapAmount";
 import { useGetCoolDown } from "../hooks/useGetCoolDown";
 import { useGetPair } from "../hooks/useGetPair";
+import { EXPLORER } from "../constants/explorer";
 
 export function Swap() {
   const { address } = useAccount();
@@ -193,7 +194,7 @@ export function Swap() {
               <AddToken />
             </div>
             <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-              <ExternalLink className="flex-5" icon={true} href={`https://sepolia.uniscan.xyz/token/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}`}>
+              <ExternalLink className="flex-5" icon={true} href={`${EXPLORER[DEFAULT_CHAINID]}/token/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}`}>
                 <Label>B139 - ETH Uniswap V2</Label>
               </ExternalLink>
             </div>
@@ -369,14 +370,14 @@ export function Swap() {
             </div>
           } */}
           <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-            <ExternalLink icon={true} href={`https://arbiscan.io/address/${EVM_CONTRACT[DEFAULT_CHAINID].BTest}`}><Label className="my-4">Accumulated LF: {Number(formatUnits(accumulatedLF ? accumulatedLF.value : BigInt(0), accumulatedLF ? accumulatedLF?.decimals: 18)).toFixed(4)} {accumulatedLF?.symbol}</Label></ExternalLink>
+            <ExternalLink icon={true} href={`${EXPLORER[DEFAULT_CHAINID]}/address/${EVM_CONTRACT[DEFAULT_CHAINID].BTest}`}><Label className="my-4">Accumulated LF: {Number(formatUnits(accumulatedLF ? accumulatedLF.value : BigInt(0), accumulatedLF ? accumulatedLF?.decimals: 18)).toFixed(4)} {accumulatedLF?.symbol}</Label></ExternalLink>
             
             { fromToken?.symbol != 'ETH' && accumulatedLF &&
               THRESHOLD.MinSwapBackAndLiquify < accumulatedLF.value && 
             <Label className="flex-[5]" style={{ color: 'red' }}>Over swap back and liquify threshold 88.8M BTEST</Label> }
           </div>
           <Divider className="my-4" />
-          <ExternalLink icon={true} href={`https://arbiscan.io/token/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}`}>Accumulated Liquidity Position</ExternalLink>
+          <ExternalLink icon={true} href={`${EXPLORER[DEFAULT_CHAINID]}/token/${EVM_CONTRACT[DEFAULT_CHAINID].Pair}`}>Accumulated Liquidity Position</ExternalLink>
         </div>
       </div>
       <div className="bg-foreground border border-border-secondary p-6 w-full rounded-[10px]" style={{ height: '1000px'}}>
