@@ -1,11 +1,12 @@
 import { Providers } from "@/components/Provider";
-import { Header, Swap } from "./swap/components";
+import { Header } from "./swap/components";
+import { Swap } from "./swap/widgets/Swap";
 
 export default function Home() {
   return (
     <Providers>
       <Header />
-      <main className="flex min-h-screen flex-col items-center justify-start px-3 sm:px-6 py-36">
+      <main className="flex-1 min-h-screen">
         <Swap />
       </main>
     </Providers>

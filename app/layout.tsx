@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@rainbow-me/rainbowkit/styles.css";
 import "./globals.css";
+import "@beincom/web-ui/styles.css";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "B139 Pre-Public",
-  description: "B139 pre-public in DEX",
+  title: "Pre-Public Sales",
+  description: "Pre-Public Sales",
 };
 
 export default function RootLayout({
@@ -18,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, "bg-background")}>{children}</body>
+      <body className={cn(inter.className, "bg-gray-5")}>{children}</body>
     </html>
   );
 }

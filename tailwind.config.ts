@@ -1,12 +1,18 @@
 import type { Config } from "tailwindcss";
 
 const config = {
+  presets: [
+    require("@beincom/web-ui/tailwind-foundation"),
+    require("@beincom/web-ui/tailwind-utils"),
+  ],
+
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
+    "./node_modules/@beincom/web-ui/dist/**/*.{js,jsx,ts,tsx}",
   ],
   prefix: "",
   theme: {

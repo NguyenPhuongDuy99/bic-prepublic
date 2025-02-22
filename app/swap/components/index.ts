@@ -1,2 +1,2 @@
-export * from "./Header";
-export * from "./Swap";
+export * from "../widgets/Header";
+export * from "../widgets/Swap";
