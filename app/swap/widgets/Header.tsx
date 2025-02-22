@@ -2,7 +2,6 @@
 import { cn } from "@/lib/utils";
 import { useScrollPosition } from "@/lib/hooks/useScrollPosition";
 import { ConnectButton } from "@/components/ConnectButton";
-import { InitRole } from "../components/InitRole";
 import Image from "next/image";
 import logoIcon from "@/public/logo_beincomm_icon_and_text.webp";
 
@@ -38,7 +37,7 @@ export const Header = ({
         </h2>
       </div>
 
-      <InitRole />
+      {/* <InitRole /> */}
 
       <ConnectButton />
     </div>

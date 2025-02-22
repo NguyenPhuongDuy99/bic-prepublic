@@ -11,7 +11,7 @@ import { Spinner } from "@beincom/web-ui";
 export function Swap() {
   const { address, isConnecting } = useAccount();
   // get pre-public info
-  const { prePublic } = useGetPrePublic({});
+  const { prePublic, isLoading: isLoadingPrePublic } = useGetPrePublic({});
 
   const { whitelistCategory, isLoading: isLoadingWhitelistCategory } =
     useGetWhitelistCategory(
@@ -33,7 +33,12 @@ export function Swap() {
     },
   );
 
-  if (isConnecting || isLoadingWhitelistCategory || isLoadingRoundInfo) {
+  if (
+    isConnecting ||
+    isLoadingWhitelistCategory ||
+    isLoadingRoundInfo ||
+    isLoadingPrePublic
+  ) {
     return (
       <div className="flex-center h-screen w-full">
         <Spinner className="size-10" />

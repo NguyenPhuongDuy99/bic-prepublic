@@ -23,7 +23,7 @@ import { TokenSwapIcon } from "@beincom/web-icons";
 import { Button, Input } from "@beincom/web-ui";
 import { TokenSelectBox } from "../components/TokenSelectBox";
 import { NumericFormat } from "react-number-format";
-
+import { formatNumber } from "../hooks/formatNumberByDecimal";
 interface Props {
   address?: `0x${string}`;
   prePublic?: boolean;
@@ -31,7 +31,7 @@ interface Props {
 }
 
 const EIGHT_DECIMALS = 8;
-
+const SIX_DECIMALS = 6;
 export default function SwapSection({ address, prePublic, roundInfo }: Props) {
   const client = createPublicClient({
     chain: DEFAULT_CHAIN,
@@ -79,15 +79,17 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
   });
 
   const inputBalance = fromTokenBalance
-    ? parseFloat(
+    ? formatNumber(
         formatUnits(fromTokenBalance?.value, fromTokenBalance?.decimals),
-      ).toFixed(4)
+        SIX_DECIMALS,
+      )
     : undefined;
 
   const outputBalance = toTokenBalance
-    ? parseFloat(
+    ? formatNumber(
         formatUnits(toTokenBalance?.value, toTokenBalance?.decimals),
-      ).toFixed(4)
+        SIX_DECIMALS,
+      )
     : undefined;
 
   const path = [fromToken?.address, toToken?.address];
@@ -158,29 +160,34 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
               <Input
                 focused={undefined}
                 filled={undefined}
-                suffix={
-                  <Button
-                    type="ghost"
-                    variant="neutral"
-                    size="sm"
-                    onClick={onMax}
-                    className="px-2"
-                  >
-                    Max
-                  </Button>
-                }
+                // suffix={
+                //   <Button
+                //     type="ghost"
+                //     variant="neutral"
+                //     size="sm"
+                //     onClick={onMax}
+                //     className="px-2"
+                //   >
+                //     Max
+                //   </Button>
+                // }
               >
                 <NumericFormat
                   id="input-amount"
                   value={inputAmount}
                   allowLeadingZeros={false}
                   thousandSeparator=","
-                  decimalScale={EIGHT_DECIMALS}
+                  decimalScale={10}
                   placeholder="Enter amount"
                   allowNegative={false}
-                  className="w-full text-ellipsis text-left text-sm font-medium text-neutral-60 disabled:text-neutral-20"
+                  className="w-full text-ellipsis text-left text-sm font-medium text-neutral-60 disabled:text-neutral-20 focus:outline-none"
                   onValueChange={(value) => setInputAmount(value.value)}
                 />
+                {!!Number(inputBalance) && (
+                  <Label className="text-xs text-neutral-40">
+                    {inputBalance}
+                  </Label>
+                )}
               </Input>
             </div>
           </div>
@@ -212,15 +219,7 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
                 options={TokenList}
                 onTokenChange={setToToken}
               />
-              <Input
-                focused={undefined}
-                filled={undefined}
-                suffix={
-                  <Button type="ghost" variant="neutral" size="sm">
-                    Max
-                  </Button>
-                }
-              >
+              <Input focused={undefined} filled={undefined}>
                 <NumericFormat
                   displayType="text"
                   defaultValue={Number(
@@ -237,6 +236,11 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
                   allowNegative={false}
                   className="w-full text-ellipsis text-left text-sm font-medium text-neutral-60 disabled:text-neutral-20"
                 />
+                {!!Number(outputBalance) && (
+                  <Label className="text-xs text-neutral-40">
+                    {outputBalance}
+                  </Label>
+                )}
               </Input>
             </div>
           </div>

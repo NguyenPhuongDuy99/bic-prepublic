@@ -21,18 +21,12 @@ import CoolDown from "../components/CoolDown";
 import { isPast } from "date-fns";
 import { cn } from "@/lib/utils";
 import { BIC_SYMBOL } from "../constants/tokenList";
+import { formatNumber } from "../hooks/formatNumberByDecimal";
 
 type PoolReverseSectionProps = {
   address?: `0x${string}`;
   prePublic?: boolean;
   roundInfo?: RoundInfo;
-};
-
-const formatNumber = (value: string) => {
-  return numericFormatter(value, {
-    thousandSeparator: true,
-    decimalScale: 4,
-  });
 };
 
 const Item = ({
