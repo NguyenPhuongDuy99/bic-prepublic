@@ -26,7 +26,7 @@ export const AddToken = ({
         options: {
           address: EVM_CONTRACT[DEFAULT_CHAINID].BTest,
           decimals: 18,
-          symbol: BIC_SYMBOL,
+          // symbol: BIC_SYMBOL,
         },
       });
 
