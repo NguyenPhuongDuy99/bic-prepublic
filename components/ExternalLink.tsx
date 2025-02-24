@@ -1,39 +1,40 @@
-import { cn } from "@/lib/utils";
-import { Button, ButtonProps } from "./ui";
 import Link from "next/link";
-import { Icon } from "./Icon";
-
+import { Button, ButtonProps } from "@beincom/web-ui";
+import { ExternalLink as ExternalLinkIcon } from "@beincom/web-icons";
+import { cn } from "@/lib/utils";
 export type ExternalLinkProps = {
   href: string;
-  variant?: ButtonProps["variant"];
+  buttonProps?: ButtonProps;
   icon?: boolean;
   className?: string;
   children?: React.ReactNode;
 };
 
-export function ExternalLink({
+export function ExternalLinkButton({
   href,
   icon = false,
   className,
-  variant,
+  buttonProps,
   children,
   ...props
 }: ExternalLinkProps) {
   return (
-    <Button
-      variant={variant}
-      asChild
-      className={cn(
-        "text-text/75 hover:text-text hover:border-text border border-border-secondary rounded-md px-3 py-2 flex gap-2 items-center",
-        className,
-      )}
+    <Link
+      target="_blank"
+      href={href}
+      className={cn("w-full", className)}
+      {...props}
     >
-      <Link target="_blank" href={href} {...props}>
+      <Button
+        type="ghost"
+        variant="neutral"
+        size="lg"
+        className="w-full"
+        {...buttonProps}
+      >
         {children}
-        {icon && (
-          <Icon className="w-[1em] h-[1em] text-inherit" name="link-external" />
-        )}
-      </Link>
-    </Button>
+        {icon && <ExternalLinkIcon className="h-5 w-5 text-inherit ml-2" />}
+      </Button>
+    </Link>
   );
 }

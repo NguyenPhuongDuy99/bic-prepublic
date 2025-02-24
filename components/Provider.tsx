@@ -18,13 +18,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem={true}
-          >
-            <RainbowProvider>{children}</RainbowProvider>
-          </ThemeProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem={true}
+        >
+          <RainbowProvider>{children}</RainbowProvider>
+        </ThemeProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

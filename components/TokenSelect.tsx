@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/select";
 import { cn, TokenInfo } from "@/lib/utils";
 import { Skeleton } from "./ui";
-import Image from "next/image";
 import { SelectProps } from "@radix-ui/react-select";
 
 export type TokenSelectProps = SelectProps & {
@@ -53,12 +52,7 @@ export function TokenSelect({
           {tokens.map((token) => (
             <SelectItem key={token.symbol} value={token.symbol}>
               <div className="flex gap-2 items-center">
-                <Image
-                  alt={`logo for ${token.name}`}
-                  src={token.logoUrl}
-                  width={24}
-                  height={24}
-                />
+                {token.logo}
                 <p>{token.symbol}</p>
               </div>
             </SelectItem>
