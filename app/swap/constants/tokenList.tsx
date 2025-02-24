@@ -7,7 +7,7 @@ export const BIC_SYMBOL = "BIC";
 
 export const TokenList: TokenInfo[] = [
   {
-    address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+    address: "0x4200000000000000000000000000000000000006",
     symbol: "ETH",
     name: "Ethereum",
     decimals: 18,

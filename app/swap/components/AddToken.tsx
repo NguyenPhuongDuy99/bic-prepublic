@@ -4,6 +4,7 @@ import { Button } from "@beincom/web-ui";
 import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 import { createWalletClient, custom } from "viem";
 import { unichainSepolia } from "viem/chains";
+import { BIC_SYMBOL } from "../constants/tokenList";
 
 export const AddToken = ({
   className,
@@ -25,7 +26,7 @@ export const AddToken = ({
         options: {
           address: EVM_CONTRACT[DEFAULT_CHAINID].BTest,
           decimals: 18,
-          symbol: "B139",
+          symbol: BIC_SYMBOL,
         },
       });
 
@@ -43,10 +44,10 @@ export const AddToken = ({
     <div>
       <Button onClick={addToken} size="lg">
         <span className="hidden md:inline text-base font-medium text-white">
-          Add $BIC to your Wallet
+          {`Add $${BIC_SYMBOL} to your Wallet`}
         </span>
         <span className="md:hidden text-sm font-medium text-white">
-          Add $BIC
+          {`Add $${BIC_SYMBOL}`}
         </span>
       </Button>
     </div>

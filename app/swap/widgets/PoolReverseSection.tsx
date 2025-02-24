@@ -18,7 +18,6 @@ import { FireIcon } from "@beincom/web-icons";
 import { RoundInfo } from "../hooks/useGetPrepublicRound";
 import SectionLayout from "../components/SectionLayout";
 import CoolDown from "../components/CoolDown";
-import { isPast } from "date-fns";
 import { cn } from "@/lib/utils";
 import { BIC_SYMBOL } from "../constants/tokenList";
 import { formatNumber } from "../hooks/formatNumberByDecimal";
@@ -99,7 +98,9 @@ export const PoolReverseSection = ({
         thousandSeparator: true,
       },
     );
-    const coolDownDate = new Date(Number(coolDown) * 1000);
+    const coolDownDate = coolDown
+      ? (Number(coolDown) + Number(roundInfo.coolDown)) * 1000
+      : 0;
 
     return (
       <>
@@ -107,7 +108,7 @@ export const PoolReverseSection = ({
         <Divider orientation="vertical" className="hidden md:block" />
         <Item label="Whitelist" value={`${roundInfo.category}`} />
         <Item label="Max Per Buy" value={`${maxAmountPerBuy} ${BIC_SYMBOL}`} />
-        {isPast(coolDownDate) && (
+        {!!coolDown && (
           <div className="flex flex-col gap-2 md:justify-between">
             <div className="text-sm font-normal text-neutral-30">Cooldown</div>
             <CoolDown date={coolDownDate} />

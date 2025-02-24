@@ -88,7 +88,7 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
   const outputBalance = toTokenBalance
     ? formatNumber(
         formatUnits(toTokenBalance?.value, toTokenBalance?.decimals),
-        SIX_DECIMALS,
+        2,
       )
     : undefined;
 
@@ -180,14 +180,13 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
                   decimalScale={10}
                   placeholder="Enter amount"
                   allowNegative={false}
-                  className="w-full text-ellipsis text-left text-sm font-medium text-neutral-60 disabled:text-neutral-20 focus:outline-none"
+                  className="max-w-[130px] text-ellipsis text-left text-sm font-medium text-neutral-60 disabled:text-neutral-20 focus:outline-none"
                   onValueChange={(value) => setInputAmount(value.value)}
                 />
-                {!!Number(inputBalance) && (
-                  <Label className="text-xs text-neutral-40">
-                    {inputBalance}
-                  </Label>
-                )}
+
+                <Label className="text-xs text-neutral-40">
+                  {inputBalance}
+                </Label>
               </Input>
             </div>
           </div>
@@ -222,25 +221,24 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
               <Input focused={undefined} filled={undefined}>
                 <NumericFormat
                   displayType="text"
-                  defaultValue={Number(
+                  value={Number(
                     formatUnits(
                       outAmounts ? outAmounts[1] : BigInt(0),
                       toToken ? toToken.decimals : 18,
                     ),
-                  ).toFixed(EIGHT_DECIMALS)}
+                  ).toFixed(2)}
                   id="input-amount"
                   allowLeadingZeros={false}
                   thousandSeparator=","
                   decimalScale={EIGHT_DECIMALS}
                   placeholder="Output amount"
                   allowNegative={false}
-                  className="w-full text-ellipsis text-left text-sm font-medium text-neutral-60 disabled:text-neutral-20"
+                  className="max-w-[100px] text-left text-sm font-medium text-neutral-60 disabled:text-neutral-20 overflow-hidden"
                 />
-                {!!Number(outputBalance) && (
-                  <Label className="text-xs text-neutral-40">
-                    {outputBalance}
-                  </Label>
-                )}
+
+                <Label className="text-xs text-neutral-40">
+                  {outputBalance}
+                </Label>
               </Input>
             </div>
           </div>
