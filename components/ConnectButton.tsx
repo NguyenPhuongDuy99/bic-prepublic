@@ -74,7 +74,7 @@ export const ConnectButton = ({ className }: ConnectButton) => {
 const HamburgerButton = (props: ButtonProps) => {
   return (
     <Button {...props}>
-      <Label className="text-base font-medium">Connect Wallet</Label>
+      <Label className="text-base font-medium text-white">Connect Wallet</Label>
     </Button>
   );
 };
