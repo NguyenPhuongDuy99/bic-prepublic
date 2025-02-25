@@ -160,6 +160,7 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
               <Input
                 focused={undefined}
                 filled={undefined}
+                className="flex w-full"
                 // suffix={
                 //   <Button
                 //     type="ghost"
@@ -172,6 +173,7 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
                 //   </Button>
                 // }
               >
+                {/* rong co max nho ko co */}
                 <NumericFormat
                   id="input-amount"
                   value={inputAmount}
@@ -180,7 +182,7 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
                   decimalScale={10}
                   placeholder="Enter amount"
                   allowNegative={false}
-                  className="max-w-[130px] text-ellipsis text-left text-sm font-medium text-neutral-60 disabled:text-neutral-20 focus:outline-none"
+                  className="flex-1 text-ellipsis text-left text-sm font-medium text-neutral-60 disabled:text-neutral-20 focus:outline-none"
                   onValueChange={(value) => setInputAmount(value.value)}
                 />
 

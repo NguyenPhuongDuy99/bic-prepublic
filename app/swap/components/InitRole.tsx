@@ -15,7 +15,7 @@ export const InitRole = ({
     <div>
       {address?.toLowerCase() == controller?.toLowerCase() && <Button
         disabled={true}
-        variant="accent"
+        variant="default"
         style={{ backgroundColor: 'red' }}
       >
         Owner
