@@ -2,14 +2,6 @@
 import Typograhphy from "@/components/Typograhphy";
 import { Card, CardContent } from "@/components/ui/card";
 import React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Button } from "@beincom/web-ui";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -22,6 +14,12 @@ const StakeBottom = () => {
     tier: 4,
     interest: "10%",
     capacity: "98M/100M",
+  };
+
+  const listTitleData = {
+    tier: "Current tier",
+    interest: " Interest (ARP)",
+    capacity: "Capacity",
   };
 
   const formSchema = z.object({
@@ -44,8 +42,8 @@ const StakeBottom = () => {
     <Card className="w-full rounded-xl">
       <CardContent className="p-6">
         <Typograhphy className="mb-5">Stake BIC</Typograhphy>
-        <div className="flex">
-          <div className="w-1/2">
+        <div className="flex-col sm:flex-row flex">
+          <div className="w-full sm:w-1/2">
             {/* <Table className="max-w-[400px]">
               <TableHeader>
                 <TableRow>
@@ -70,25 +68,42 @@ const StakeBottom = () => {
                 ))}
               </TableBody>
             </Table> */}
-            <div className="flex gap-12">
+            <div className="flex-col sm:flex-row flex gap-2 sm:gap-12">
               {Object.keys(dataTable).map((item, id) => (
-                <div className="flex flex-col gap-2" key={id}>
-                  <h3>{item}</h3>
-                  <p>{dataTable[item as keyof typeof dataTable]}</p>
+                <div
+                  className="flex sm:flex-col justify-between sm:justify-start gap-2"
+                  key={id}
+                >
+                  <h3 className="text-neutral-30 text-sm">
+                    {listTitleData[item as keyof typeof listTitleData]}
+                  </h3>
+                  <p className="text-neutral-60 text-sm font-semibold">
+                    {dataTable[item as keyof typeof dataTable]}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
-          <div className="flex-1 border border-transparent border-l-[#EAEDF2] pl-6">
+          <div className="flex-1 border border-transparent border-t-[#EAEDF2] sm:border-l-[#EAEDF2] sm:border-t-0 sm:pl-6 pt-3 sm:pt-0 mt-4 sm:mt-0">
             <Form {...form}>
-              <form className="flex items-end w-full gap-4" autoComplete="off">
+              <form
+                className="flex-col sm:flex-row flex items-end w-full gap-5 sm:gap-4"
+                autoComplete="off"
+              >
                 <InputField
                   name="amount"
                   control={control}
                   label="Amount"
                   id="amount"
+                  placeholder="Enter amount"
+                  className="flex-shrink-0"
                 />
-                <Button onClick={handleSubmit(onSubmit)}>Stake</Button>
+                <Button
+                  onClick={handleSubmit(onSubmit)}
+                  className="w-full sm:w-auto h-10"
+                >
+                  Stake
+                </Button>
               </form>
             </Form>
           </div>

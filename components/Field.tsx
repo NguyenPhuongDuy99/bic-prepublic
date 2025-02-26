@@ -5,7 +5,7 @@ import { FormField, FormItem, FormMessage } from "./ui/form";
 import { Input, InputRef } from "@beincom/web-ui";
 import { Label } from "@/components/ui";
 
-interface FieldProps extends React.RefAttributes<InputRef<HTMLInputElement>> {
+interface FieldProps extends React.HTMLAttributes<HTMLInputElement> {
   control: Control<any>;
   name: string;
   label?: string;
@@ -21,7 +21,7 @@ const InputField = ({ control, name, label, id, ...props }: FieldProps) => {
       name={name}
       render={({ field }) => {
         return (
-          <FormItem className="flex-1 relative">
+          <FormItem className="flex-1 relative w-full">
             {label && <Label htmlFor={id}>{label}</Label>}
             <Input
               focused={undefined}
@@ -30,7 +30,7 @@ const InputField = ({ control, name, label, id, ...props }: FieldProps) => {
               {...props}
               {...field}
             />
-            <FormMessage className="absolute left-0 top-full" />
+            <FormMessage className="absolute left-0 top-full !mt-0" />
           </FormItem>
         );
       }}

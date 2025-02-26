@@ -49,35 +49,16 @@ const StakeTopMobile = ({ className, ...props }: StakeTopMobile) => {
   return (
     <Card className={cn("w-full rounded-xl", className)} {...props}>
       <CardContent className="p-6">
-        <Typograhphy className="mb-5">My staking mobile</Typograhphy>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[58px]">Tier</TableHead>
-              <TableHead className="w-[396px]">Staking amount</TableHead>
-              <TableHead className="w-[396px]">Interest (ARP)</TableHead>
-              <TableHead>Time left</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {dataTable.map((data) => (
-              <TableRow key={data.tier}>
-                <TableCell className="text-neutral-60 text-base font-normal leading-6">
-                  {data.tier}
-                </TableCell>
-                <TableCell className="text-neutral-60 text-base font-normal leading-6">
-                  {data.stakingAmount}
-                </TableCell>
-                <TableCell className="text-neutral-60 text-base font-normal leading-6">
-                  {data.interest}
-                </TableCell>
-                <TableCell className="text-neutral-60 text-base font-normal leading-6">
-                  {data.timeLeft}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <Typograhphy className="mb-5">My staking</Typograhphy>
+        <div className="">
+          <h3>Tier 1</h3>
+          <div className="flex flex-col gap-3">
+            <div className="flex justify-between">
+              <p className="text-neutral-30 text-xs leading-5">Staking amount</p>
+              <p className="text-neutral-60 text-sm leading-5">1,000,000 BIC</p>
+            </div>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
