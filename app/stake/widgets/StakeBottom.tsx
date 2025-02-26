@@ -10,8 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Label } from "@/components/ui";
-import { Button, Input } from "@beincom/web-ui";
+import { Button } from "@beincom/web-ui";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,13 +18,11 @@ import { Form } from "@/components/ui/form";
 import InputField from "@/components/Field";
 
 const StakeBottom = () => {
-  const dataTable = [
-    {
-      tier: 4,
-      interest: "10%",
-      capacity: "98M/100M",
-    },
-  ];
+  const dataTable = {
+    tier: 4,
+    interest: "10%",
+    capacity: "98M/100M",
+  };
 
   const formSchema = z.object({
     amount: z.coerce.number({
@@ -49,7 +46,7 @@ const StakeBottom = () => {
         <Typograhphy className="mb-5">Stake BIC</Typograhphy>
         <div className="flex">
           <div className="w-1/2">
-            <Table className="max-w-[400px]">
+            {/* <Table className="max-w-[400px]">
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[100px]">Current tier</TableHead>
@@ -72,7 +69,15 @@ const StakeBottom = () => {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+            </Table> */}
+            <div className="flex gap-12">
+              {Object.keys(dataTable).map((item, id) => (
+                <div className="flex flex-col gap-2" key={id}>
+                  <h3>{item}</h3>
+                  <p>{dataTable[item as keyof typeof dataTable]}</p>
+                </div>
+              ))}
+            </div>
           </div>
           <div className="flex-1 border border-transparent border-l-[#EAEDF2] pl-6">
             <Form {...form}>
