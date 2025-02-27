@@ -7,7 +7,7 @@ export default function SectionLayout({
 }: React.ComponentPropsWithoutRef<"div">) {
   return (
     <div
-      className={cn("bg-white border p-4 w-full rounded-xl ", className)}
+      className={cn("bg-white border p-4 w-full rounded-xl overflow-hidden", className)}
       {...props}
     >
       {children}
