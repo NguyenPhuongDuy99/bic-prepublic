@@ -49,6 +49,7 @@ export const MAINNET_SUPPORTED_CHAINS = [
 ] as const;
 
 export const TESTNET_SUPPORTED_CHAINS = [
+  arbitrumSepolia,
   unichainSepolia,
   arbitrum
 ] as const;

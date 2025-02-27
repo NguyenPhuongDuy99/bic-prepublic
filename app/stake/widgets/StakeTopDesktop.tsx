@@ -12,103 +12,16 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@beincom/web-ui";
 import React from "react";
+import { useGetDeposits } from "@/app/stake/hooks/useGetDeposits";
+import { useWithdrawStake } from "@/app/stake/hooks/useWithdrawStake";
 
 interface StakeTopDesktop extends React.HTMLAttributes<HTMLDivElement> {}
 
 const StakeTopDesktop = ({ className, ...props }: StakeTopDesktop) => {
-  const dataTable = [
-    {
-      tier: 1,
-      stakingAmount: "1,000,000 BIC",
-      interest: "90,000 BIC (40%)",
-      timeLeft: "90 days, 6 hours, 35 min",
-    },
-    {
-      tier: 2,
-      stakingAmount: "1,000,000 BIC",
-      interest: "90,000 BIC (40%)",
-      timeLeft: "90 days, 6 hours, 35 min",
-    },
-    {
-      tier: 3,
-      stakingAmount: "1,000,000 BIC",
-      interest: "90,000 BIC (40%)",
-      timeLeft: "90 days, 6 hours, 35 min",
-    },
-    {
-      tier: 4,
-      stakingAmount: "1,000,000 BIC",
-      interest: "90,000 BIC (40%)",
-      timeLeft: "90 days, 6 hours, 35 min",
-    },
-    {
-      tier: 5,
-      stakingAmount: "1,000,000 BIC",
-      interest: "90,000 BIC (40%)",
-      timeLeft: "90 days, 6 hours, 35 min",
-    },
-    {
-      tier: 1,
-      stakingAmount: "1,000,000 BIC",
-      interest: "90,000 BIC (40%)",
-      timeLeft: "90 days, 6 hours, 35 min",
-    },
-    {
-      tier: 2,
-      stakingAmount: "1,000,000 BIC",
-      interest: "90,000 BIC (40%)",
-      timeLeft: "90 days, 6 hours, 35 min",
-    },
-    {
-      tier: 3,
-      stakingAmount: "1,000,000 BIC",
-      interest: "90,000 BIC (40%)",
-      timeLeft: "90 days, 6 hours, 35 min",
-    },
-    {
-      tier: 4,
-      stakingAmount: "1,000,000 BIC",
-      interest: "90,000 BIC (40%)",
-      timeLeft: "90 days, 6 hours, 35 min",
-    },
-    {
-      tier: 5,
-      stakingAmount: "1,000,000 BIC",
-      interest: "90,000 BIC (40%)",
-      timeLeft: "90 days, 6 hours, 35 min",
-    },
-    {
-      tier: 1,
-      stakingAmount: "1,000,000 BIC",
-      interest: "90,000 BIC (40%)",
-      timeLeft: "90 days, 6 hours, 35 min",
-    },
-    {
-      tier: 2,
-      stakingAmount: "1,000,000 BIC",
-      interest: "90,000 BIC (40%)",
-      timeLeft: "90 days, 6 hours, 35 min",
-    },
-    {
-      tier: 3,
-      stakingAmount: "1,000,000 BIC",
-      interest: "90,000 BIC (40%)",
-      timeLeft: "90 days, 6 hours, 35 min",
-    },
-    {
-      tier: 4,
-      stakingAmount: "1,000,000 BIC",
-      interest: "90,000 BIC (40%)",
-      timeLeft: "90 days, 6 hours, 35 min",
-    },
-    {
-      tier: 5,
-      stakingAmount: "1,000,000 BIC",
-      interest: "90,000 BIC (40%)",
-      timeLeft: "90 days, 6 hours, 35 min",
-      isTimeover: true,
-    },
-  ];
+  const {deposits} = useGetDeposits({});
+  const [withDrawIndex, setWithDrawIndex] = React.useState<number>(0);
+  const {withdrawAsync} = useWithdrawStake({startIndex: withDrawIndex, batchSize: 1});
+
   return (
     <Card className={cn("w-full rounded-xl", className)} {...props}>
       <CardContent className="p-6">
@@ -125,27 +38,35 @@ const StakeTopDesktop = ({ className, ...props }: StakeTopDesktop) => {
         </Table>
 
         <div
-          className={cn({ "max-h-72 overflow-y-auto": dataTable.length > 10 })}
+          className={cn({ "max-h-72 overflow-y-auto": deposits.length > 10 })}
         >
           <Table>
             <TableBody>
-              {dataTable.map((data, id) => (
+              {deposits.map((data, id) => (
                 <TableRow key={id}>
                   <TableCell className="w-[58px] text-neutral-60 text-base font-normal leading-6">
                     {data.tier}
                   </TableCell>
                   <TableCell className=" w-[396px] text-neutral-60 text-base font-normal leading-6">
-                    {data.stakingAmount}
+                    {data.stakingAmount} BIC
                   </TableCell>
                   <TableCell className="w-[396px] text-neutral-60 text-base font-normal leading-6">
                     {data.interest}
                   </TableCell>
                   <TableCell className="text-neutral-60 text-base font-normal leading-6">
-                    {data.isTimeover ? (
-                      <Button onClick={() => console.log("click")}>
+                    {(!data.withdrawn && data.timeLeft < 0) ? (
+                      <Button onClick={() => {
+                        setWithDrawIndex(data.tier - 1);
+                        setWithDrawIndex((prevState) => {
+                          withdrawAsync();
+                          return prevState;
+                        });
+
+                      }}>
                         Withdraw
                       </Button>
                     ) : (
+                      data.withdrawn ? "Withdrawn" :
                       data.timeLeft
                     )}
                   </TableCell>

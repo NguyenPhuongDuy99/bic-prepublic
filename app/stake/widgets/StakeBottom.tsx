@@ -8,22 +8,31 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import InputField from "@/components/Field";
+import { useGetCurrentTier } from "@/app/stake/hooks/useGetCurrentTier";
+import { DEFAULT_CHAINID, EVM_CONTRACT } from "@/app/stake/constants/contractAddress";
+import { useAccount, useBalance, useChainId } from "wagmi";
+import { formatEther, parseEther } from "viem";
+import { useStake } from "@/app/stake/hooks/useStake";
 
 const StakeBottom = () => {
-  const dataTable = {
-    tier: 4,
-    interest: "10%",
-    capacity: "98M/100M",
-  };
+  const {currentTier ,isLoading: isLoadCurrentTier } = useGetCurrentTier({});
+  const { address, isConnecting } = useAccount();
+  const currentChainId = useChainId();
+
+  const {data: bicBalance} = useBalance({
+    address,
+    token: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].Bic,
+    chainId: currentChainId,
+  });
 
   const listTitleData = {
     tier: "Current tier",
-    interest: " Interest (ARP)",
+    interest: "Interest (ARP)",
     capacity: "Capacity",
   };
 
   const formSchema = z.object({
-    amount: z.coerce.number({
+    amount: z.coerce.string({
       required_error: "Please fill in",
       invalid_type_error: "Amount must be a number",
     }),
@@ -33,11 +42,22 @@ const StakeBottom = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const { control, handleSubmit, setValue } = form;
+  const { control, handleSubmit, setValue, getValues } = form;
+
+  const {
+    stakeAsync,
+  } = useStake({
+    amount: getValues("amount") ? parseEther(getValues("amount")) : BigInt(0),
+  });
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("values", values);
+    stakeAsync();
   };
-  const onSetMaxValue = () => setValue("amount", 123);
+  const onSetMaxValue = () => {
+    if(bicBalance){
+      setValue("amount", formatEther(bicBalance.value));
+    }
+  }
 
   return (
     <Card className="w-full rounded-xl">
@@ -46,7 +66,7 @@ const StakeBottom = () => {
         <div className="flex-col sm:flex-row flex">
           <div className="w-full sm:w-1/2">
             <div className="flex-col sm:flex-row flex gap-2 sm:gap-12">
-              {Object.keys(dataTable).map((item, id) => (
+              {Object.keys(currentTier).map((item, id) => (
                 <div
                   className="flex sm:flex-col justify-between sm:justify-start gap-2"
                   key={id}
@@ -55,7 +75,7 @@ const StakeBottom = () => {
                     {listTitleData[item as keyof typeof listTitleData]}
                   </h3>
                   <p className="text-neutral-60 text-sm font-semibold">
-                    {dataTable[item as keyof typeof dataTable]}
+                    {currentTier[item as keyof typeof currentTier]}
                   </p>
                 </div>
               ))}
