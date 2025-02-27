@@ -1,14 +1,6 @@
 import StakingMobileItem from "@/app/stake/widgets/StakingMobileItem";
 import Typograhphy from "@/components/Typograhphy";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import React from "react";
 
@@ -54,7 +46,7 @@ const StakeTopMobile = ({ className, ...props }: StakeTopMobile) => {
         <Typograhphy className="mb-5">My staking</Typograhphy>
         <div className="flex flex-col gap-4">
           {dataTable.map((item) => (
-            <div className="[&:not(:first-child)]:border-t-gray-5 [&:not(:first-child)]:border-t-[1px] [&:not(:first-child)]:pt-4">
+            <div key={item.tier} className="[&:not(:first-child)]:border-t-gray-5 [&:not(:first-child)]:border-t-[1px] [&:not(:first-child)]:pt-4">
               <h3 className="text-neutral-60 text-sm font-semibold">
                 Tier {item.tier}
               </h3>

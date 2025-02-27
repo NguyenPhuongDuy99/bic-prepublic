@@ -33,10 +33,11 @@ const StakeBottom = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const { control, handleSubmit } = form;
+  const { control, handleSubmit, setValue } = form;
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log("values", values);
   };
+  const onSetMaxValue = () => setValue("amount", 123);
 
   return (
     <Card className="w-full rounded-xl">
@@ -44,30 +45,6 @@ const StakeBottom = () => {
         <Typograhphy className="mb-5">Stake BIC</Typograhphy>
         <div className="flex-col sm:flex-row flex">
           <div className="w-full sm:w-1/2">
-            {/* <Table className="max-w-[400px]">
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[100px]">Current tier</TableHead>
-                  <TableHead className="w-[200px]">Interest (ARP)</TableHead>
-                  <TableHead>Capacity</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {dataTable.map((data) => (
-                  <TableRow key={data.tier}>
-                    <TableCell className="text-neutral-60 text-base font-semibold leading-6">
-                      {data.tier}
-                    </TableCell>
-                    <TableCell className="text-neutral-60 text-base font-semibold leading-6">
-                      {data.interest}
-                    </TableCell>
-                    <TableCell className="text-neutral-60 text-base font-semibold leading-6">
-                      {data.capacity}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table> */}
             <div className="flex-col sm:flex-row flex gap-2 sm:gap-12">
               {Object.keys(dataTable).map((item, id) => (
                 <div
@@ -90,14 +67,22 @@ const StakeBottom = () => {
                 className="flex-col sm:flex-row flex items-end w-full gap-5 sm:gap-4"
                 autoComplete="off"
               >
-                <InputField
-                  name="amount"
-                  control={control}
-                  label="Amount"
-                  id="amount"
-                  placeholder="Enter amount"
-                  className="flex-shrink-0"
-                />
+                <div className="flex relative w-full">
+                  <InputField
+                    name="amount"
+                    control={control}
+                    label="Amount"
+                    id="amount"
+                    placeholder="Enter amount"
+                    className="flex-shrink-0"
+                  />
+                  <Button
+                    className="bg-gray-400 absolute right-1 bottom-1"
+                    onClick={onSetMaxValue}
+                  >
+                    Max
+                  </Button>
+                </div>
                 <Button
                   onClick={handleSubmit(onSubmit)}
                   className="w-full sm:w-auto h-10"

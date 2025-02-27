@@ -14,7 +14,7 @@
   /* gray */
   --border: 220 14% 96%;
 
-  --ring: 166 92% 70%;
+  --ring: 267 57% 53%;
 
   /* Leaving this here if we want to have different status colors for light/dark */
   --success: 119 90% 35%;
@@ -37,7 +37,7 @@
   --border: 226.67 5.52% 31.96%;
   --border-secondary: 226.67 6.77% 26.08%;
 
-  --ring: 226.67 6.77% 60%;
+  --ring: 267 57% 53%;
 
   /* Leaving this here if we want to have different status colors for light/dark */
   --success: 133 56% 55%;
@@ -70,7 +70,7 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 267 57% 53%;
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -82,7 +82,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 267 57% 53%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -97,7 +97,7 @@
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
+    --primary: 267 57% 53%;
     --primary-foreground: 222.2 47.4% 11.2%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
