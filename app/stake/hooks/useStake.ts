@@ -5,6 +5,8 @@ import { StakingPoolABI } from "@/app/stake/abis/StakingPool";
 import { getExplorerLink } from "@/lib/utils";
 import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient, UseQueryOptions } from "@tanstack/react-query";
+import { useGetAllowance } from "@/app/stake/hooks/useGetAllowance";
+import { parseEther } from "viem";
 
 interface StakeParams {
   amount: bigint
@@ -20,13 +22,13 @@ export function useStake(
   const queryClient = useQueryClient();
   const { switchChainAsync } = useSwitchChain();
   const now = new Date().getTime()
+  const {allowance} = useGetAllowance()
 
   const {
     approveAsync,
     approvePending,
     approveSuccess
   } = useApprove({})
-
   const stakeConfig = {
     abi: StakingPoolABI,
     address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].StakingPool,
@@ -85,15 +87,10 @@ export function useStake(
     stake: () => writeContract(stakeConfig),
     stakeAsync: async () => {
       await checkChain();
-      if (approvePending) {
-        return
-      }
-      if (approveSuccess) {
-        return writeContractAsync(stakeConfig);
-      }
-      if (params.amount > 0) {
+      if(allowance! < parseEther(params.amount.toString())) {
         await approveAsync()
       }
+      return writeContractAsync(stakeConfig);
     },
     stakeConfirmed,
     stakeConfirming,
