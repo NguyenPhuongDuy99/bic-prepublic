@@ -26,7 +26,7 @@ export function Swap() {
 
   const { roundInfo, isLoading: isLoadingRoundInfo } = useGetPrePublicRound(
     {
-      category: BigInt(1),
+      category: whitelistCategory,
     },
     {
       enabled: Boolean(whitelistCategory),
