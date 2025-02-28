@@ -137,7 +137,6 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
     ),
     allowance: allowance ? allowance : BigInt(0),
   });
-
   return (
     <div className="w-full flex flex-col gap-3">
       <Card className="w-full rounded-xl">
@@ -171,7 +170,7 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
                     className="max-w-[102px] sm:max-w-full flex-1 text-ellipsis text-left text-sm font-medium text-neutral-60 disabled:text-neutral-20 focus:outline-none"
                     onValueChange={(value) => setInputAmount(value.value)}
                   />
-                  <Label className="text-xs text-neutral-40 flex-shrink-0">
+                  <Label className="text-xs text-neutral-40 flex-shrink-0" onClick={() => setInputAmount(inputBalance || '')}>
                     {inputBalance}
                   </Label>
                 </div>

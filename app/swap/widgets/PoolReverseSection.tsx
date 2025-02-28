@@ -11,7 +11,7 @@ import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 import { numericFormatter } from "react-number-format";
 import { AutoTextSize } from "auto-text-size";
 import { Divider, HelpText, Skeleton } from "@beincom/web-ui";
-import CustomCountdown from "../components/CountDown";
+import CustomCountdown, { CountDownItemDisplay } from "../components/CountDown";
 import { useGetCoolDown } from "../hooks/useGetCoolDown";
 import { FireIcon } from "@beincom/web-icons";
 import { RoundInfo } from "../hooks/useGetPrepublicRound";
@@ -65,7 +65,7 @@ export const PoolReverseSection = ({
 
   const { currentLF, isLoading: isLoadingCurrentLF } = useGetCurrentLF({});
 
-  // get cool down
+  // get last buy
   const { coolDown } = useGetCoolDown(
     {
       address: address,
@@ -74,14 +74,15 @@ export const PoolReverseSection = ({
       enabled: Boolean(address),
     },
   );
-
   const isInSales =
     Number(roundInfo?.startTime) * 1000 < Date.now() &&
     Date.now() < Number(roundInfo?.endTime) * 1000;
   const isUpComing = Number(roundInfo?.startTime) * 1000 > Date.now();
   const isEndSales = Date.now() > Number(roundInfo?.endTime);
   const coolDownDate = coolDown
-    ? (Number(coolDown) + Number(roundInfo?.coolDown)) * 1000
+    ? (Number(coolDown) + Number(roundInfo?.coolDown)) * 1000 - Date.now() <= 0
+      ? 0
+      : (Number(coolDown) + Number(roundInfo?.coolDown)) * 1000 - Date.now()
     : 0;
   const renderPoolReverseContent = () => {
     switch (true) {
@@ -91,7 +92,7 @@ export const PoolReverseSection = ({
             <div className="flex flex-col gap-2">
               <div className="text-lg font-semibold text-neutral-60 flex items-center gap-2">
                 <FireIcon className="w-6 h-6" />
-                Sales start in
+                Pre-public Launch starts in
               </div>
               <CustomCountdown
                 date={new Date(Number(roundInfo?.startTime) * 1000)}
@@ -104,18 +105,18 @@ export const PoolReverseSection = ({
       case isInSales: {
         return (
           <>
-            {!!coolDown && (
+            {
               <div className="flex flex-col gap-2 md:justify-between">
                 <div className="text-sm font-normal text-neutral-30">
                   Cooldown
                 </div>
-                <CoolDown date={coolDownDate} />
+                <CoolDown date={!coolDownDate ? new Date() : coolDownDate} />
               </div>
-            )}
+            }
             <div className="flex flex-col gap-2">
               <div className="text-lg font-semibold text-neutral-60 flex items-center gap-2">
                 <FireIcon className="w-6 h-6" />
-                Sales end in
+                Pre-public Launch ends in
               </div>
               <CustomCountdown
                 date={new Date(Number(roundInfo?.endTime) * 1000)}
@@ -129,7 +130,7 @@ export const PoolReverseSection = ({
           <div className="flex flex-col gap-2">
             <div className="text-lg font-semibold text-neutral-60 flex items-center gap-2">
               <FireIcon className="w-6 h-6" />
-              Sales ended
+              Pre-public Launch ended
             </div>
           </div>
         );
@@ -163,7 +164,11 @@ export const PoolReverseSection = ({
     return (
       <>
         <Item label="Whitelist" value={`${roundInfo?.category}`} />
+        <Divider orientation="horizontal" className="md:hidden" />
+        <Divider orientation="vertical" className="hidden md:block" />
         <Item label="Max Per Buy" value={`${maxAmountPerBuy} ${BIC_SYMBOL}`} />
+        <Divider orientation="horizontal" className="md:hidden" />
+        <Divider orientation="vertical" className="hidden md:block" />
         {/* {!!coolDown && !isStartSales && (
           <div className="flex flex-col gap-2 md:justify-between">
             <div className="text-sm font-normal text-neutral-30">Cooldown</div>
@@ -256,10 +261,12 @@ export const PoolReverseSection = ({
         /> */}
 
         {renderPrePublicPhase()}
-        <Item label={`Sell ETH - ${BIC_SYMBOL} `} value={"LF 0%"} />
+        <Item label={`ETH -> ${BIC_SYMBOL} `} value={"LF = 0%"} />
+        <Divider orientation="horizontal" className="md:hidden" />
+        <Divider orientation="vertical" className="hidden md:block" />
         <Item
-          label={`Sell ${BIC_SYMBOL} - ETH `}
-          value={`LF ${Number(currentLF) / 100}%`}
+          label={`${BIC_SYMBOL} -> ETH `}
+          value={`LF = ${Number(currentLF) / 100}%`}
           isLoading={isLoadingCurrentLF}
         />
       </div>

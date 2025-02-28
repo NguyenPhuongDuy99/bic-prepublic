@@ -41,7 +41,6 @@ export function useGetPair(
     }
   });
 
-  // console.log('WETH', WETH)
 
   return {
     pairQueryKey: queryKey,
