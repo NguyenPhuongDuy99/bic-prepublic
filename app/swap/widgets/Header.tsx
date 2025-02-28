@@ -33,7 +33,7 @@ export const Header = ({
         </div>
 
         <h2 className="text-[12px] font-medium text-[#444F8E] md:text-[14.7px] ">
-          Pre-Public Sales
+          Pre-Public Launch
         </h2>
       </div>
 

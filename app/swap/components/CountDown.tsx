@@ -40,6 +40,7 @@ export default function CustomCountdown({
     <Countdown
       date={date}
       renderer={(props) => {
+        console.log('props', props,date)
         const value = formatTimeDelta(props, {
           zeroPadTime: 2,
         });

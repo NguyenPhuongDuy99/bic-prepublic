@@ -8,7 +8,8 @@ interface Props {
 }
 
 export default function CoolDown({ date, className, onComplete }: Props) {
-  return (
+  console.log("date", date);
+  return(
     <Countdown
       date={date}
       renderer={(props) => {
