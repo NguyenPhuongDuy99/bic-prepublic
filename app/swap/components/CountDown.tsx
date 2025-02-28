@@ -64,11 +64,11 @@ export default function CustomCountdown({
               label="min"
             />
 
-            <CountDownItemDisplay
+            {/* <CountDownItemDisplay
               time={value.seconds}
               className={classNames?.countdown}
               label="sec"
-            />
+            /> */}
           </div>
         );
       }}

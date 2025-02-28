@@ -48,11 +48,11 @@ export function Swap() {
 
   return (
     <div className="flex flex-col gap-4 m-4">
-      {/* <PoolReverseSection
+      <PoolReverseSection
         address={address}
         prePublic={prePublic}
         roundInfo={roundInfo}
-      /> */}
+      />
       {address && (
         <SwapSection
           address={address}

@@ -266,7 +266,7 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
                     roundInfo &&
                     (now < roundInfo.startTime || now > roundInfo.endTime))
                 }
-                className="w-full"
+                className="w-full mt-5"
                 variant="primary"
                 size="xl"
               >
@@ -325,18 +325,18 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
           </div>
         </div>
         <Divider className="my-4" /> */}
-
+      {/* 
       <SectionLayout className="flex flex-col items-start gap-6 ">
         <Label style={{ color: "#ED9B07" }} className="text-base font-normal">
           Warning over swap back and liquify
         </Label>
-        {/* { fromToken?.symbol === 'ETH' && outAmounts && toTokenBalance &&
+        { fromToken?.symbol === 'ETH' && outAmounts && toTokenBalance &&
             THRESHOLD.MaxAllocation < outAmounts[1] + toTokenBalance?.value && 
             <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
               <Label className="flex-[5]">Your current allocation: {fromToken?.symbol === 'ETH' ? outputBalance : inputBalance} + Swap Output: {Number(formatUnits(outAmounts ? outAmounts[1] : BigInt(0), toToken ? toToken.decimals : 18)).toFixed(4)}</Label>
               <Label style={{ color: 'red' }}>Over Max Allocation 8.88B BTEST</Label>
             </div>
-          } */}
+          }
         <div className="w-full flex flex-col gap-3 md:flex-row md:justify-start">
           <div className="w-full flex flex-col justify-start items-center gap-2 md:w-auto">
             <ExternalLinkButton
@@ -372,7 +372,7 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
             Accumulated Liquidity Position
           </ExternalLinkButton>
         </div>
-      </SectionLayout>
+      </SectionLayout> */}
     </div>
   );
 }

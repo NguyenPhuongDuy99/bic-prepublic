@@ -9,18 +9,7 @@ export default function Home() {
     <Providers>
       <Header />
       <main className="flex-1 min-h-screen">
-        <Tabs defaultValue="swap" className="">
-          <TabsList className="grid w-full grid-cols-2 max-w-[143px] mx-auto">
-            <TabsTrigger value="swap">Swap</TabsTrigger>
-            <TabsTrigger value="stake">Stake</TabsTrigger>
-          </TabsList>
-          <TabsContent value="swap">
-            <Swap />
-          </TabsContent>
-          <TabsContent value="stake">
-            <Stake />
-          </TabsContent>
-        </Tabs>
+        <Swap />
       </main>
     </Providers>
   );
