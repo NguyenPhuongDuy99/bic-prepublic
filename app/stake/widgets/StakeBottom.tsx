@@ -9,19 +9,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import InputField from "@/components/Field";
 import { useGetCurrentTier } from "@/app/stake/hooks/useGetCurrentTier";
-import { DEFAULT_CHAINID, EVM_CONTRACT } from "@/app/stake/constants/contractAddress";
+import {
+  DEFAULT_CHAINID,
+  EVM_CONTRACT,
+} from "@/app/stake/constants/contractAddress";
 import { useAccount, useBalance, useChainId } from "wagmi";
 import { formatEther, parseEther } from "viem";
 import { useStake } from "@/app/stake/hooks/useStake";
 
 const StakeBottom = () => {
-  const {currentTier ,isLoading: isLoadCurrentTier } = useGetCurrentTier({});
+  const { currentTier, isLoading: isLoadCurrentTier } = useGetCurrentTier({});
   const { address, isConnecting } = useAccount();
   const currentChainId = useChainId();
 
-  const {data: bicBalance} = useBalance({
+  const { data: bicBalance } = useBalance({
     address,
-    token: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].Bic,
+    token: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID]?.Bic,
     chainId: currentChainId,
   });
 
@@ -44,9 +47,7 @@ const StakeBottom = () => {
 
   const { control, handleSubmit, setValue, getValues } = form;
 
-  const {
-    stakeAsync,
-  } = useStake({
+  const { stakeAsync } = useStake({
     amount: getValues("amount") ? parseEther(getValues("amount")) : BigInt(0),
   });
 
@@ -54,10 +55,10 @@ const StakeBottom = () => {
     stakeAsync();
   };
   const onSetMaxValue = () => {
-    if(bicBalance){
+    if (bicBalance) {
       setValue("amount", formatEther(bicBalance.value));
     }
-  }
+  };
 
   return (
     <Card className="w-full rounded-xl">
@@ -95,6 +96,10 @@ const StakeBottom = () => {
                     id="amount"
                     placeholder="Enter amount"
                     className="flex-shrink-0"
+                    balance={
+                      bicBalance &&
+                      `${formatEther(bicBalance?.value)} ${bicBalance.symbol}`
+                    }
                   />
                   <Button
                     className="bg-gray-400 absolute right-1 bottom-1"

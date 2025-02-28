@@ -11,9 +11,17 @@ interface FieldProps extends React.HTMLAttributes<HTMLInputElement> {
   placeholder?: string;
   type?: string;
   id?: string;
+  balance?: string;
 }
 
-const InputField = ({ control, name, label, id, ...props }: FieldProps) => {
+const InputField = ({
+  control,
+  name,
+  label,
+  id,
+  balance,
+  ...props
+}: FieldProps) => {
   return (
     <FormField
       control={control}
@@ -21,7 +29,12 @@ const InputField = ({ control, name, label, id, ...props }: FieldProps) => {
       render={({ field }) => {
         return (
           <FormItem className="flex-1 relative w-full">
-            {label && <Label htmlFor={id}>{label}</Label>}
+            {label && (
+              <div className="flex justify-between items-center">
+                <Label htmlFor={id}>{label}</Label>
+                <p>{balance}</p>
+              </div>
+            )}
             <Input id={id} {...props} {...field} />
             <FormMessage className="absolute left-0 top-full !mt-0" />
           </FormItem>

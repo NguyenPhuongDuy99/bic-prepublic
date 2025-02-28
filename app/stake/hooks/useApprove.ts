@@ -23,10 +23,10 @@ export function useApprove(
 
   const approveConfig = {
     abi: ERC20ABI,
-    address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].Bic,
+    address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID]?.Bic,
     chainId: currentChainId,
     functionName: "approve",
-    args: [EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].StakingPool, maxUint256],
+    args: [EVM_CONTRACT[currentChainId || DEFAULT_CHAINID]?.StakingPool, maxUint256],
     account: address,
   } as const;
 

@@ -18,7 +18,7 @@ export function useGetTiers(
     ...rest
   } = useReadContract({
     abi: StakingPoolABI,
-    address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].StakingPool,
+    address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID]?.StakingPool,
     functionName: "getTiers",
     chainId: currentChainId,
     args: [],

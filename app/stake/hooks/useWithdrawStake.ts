@@ -22,7 +22,7 @@ export function useWithdrawStake(
 
   const withdrawConfig = {
     abi: StakingPoolABI,
-    address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].StakingPool,
+    address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID]?.StakingPool,
     chainId: currentChainId,
     functionName: "withdrawBatch",
     args: [params.startIndex, params.batchSize],

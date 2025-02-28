@@ -21,7 +21,7 @@ export function useGetAllowance(
     ...rest
   } = useReadContract({
     abi: ERC20ABI,
-    address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].Bic,
+    address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID]?.Bic,
     functionName: "allowance",
     chainId: currentChainId,
     args: [address!, EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].StakingPool],

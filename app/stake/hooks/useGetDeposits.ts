@@ -27,7 +27,7 @@ export function useGetDeposits(
     ...rest
   } = useReadContract({
     abi: StakingPoolABI,
-    address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].StakingPool,
+    address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID]?.StakingPool,
     functionName: "getUserDeposits",
     chainId: currentChainId,
     args: [address],
