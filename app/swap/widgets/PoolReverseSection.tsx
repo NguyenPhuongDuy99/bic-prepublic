@@ -74,7 +74,6 @@ export const PoolReverseSection = ({
       enabled: Boolean(address),
     },
   );
-  console.log("coolDown", coolDown);
   const isInSales =
     Number(roundInfo?.startTime) * 1000 < Date.now() &&
     Date.now() < Number(roundInfo?.endTime) * 1000;
