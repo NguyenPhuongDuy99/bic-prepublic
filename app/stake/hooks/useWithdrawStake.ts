@@ -1,8 +1,17 @@
 import { useQueryClient, UseQueryOptions } from "@tanstack/react-query";
-import { useAccount, useChainId, useSwitchChain, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import {
+  useAccount,
+  useChainId,
+  useSwitchChain,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { StakingPoolABI } from "@/app/stake/abis/StakingPool";
-import { DEFAULT_CHAINID, EVM_CONTRACT } from "@/app/stake/constants/contractAddress";
+import {
+  DEFAULT_CHAINID,
+  EVM_CONTRACT,
+} from "@/app/stake/constants/contractAddress";
 
 interface WithdrawStakeParams {
   startIndex: number;
@@ -11,15 +20,15 @@ interface WithdrawStakeParams {
 
 export function useWithdrawStake(
   params: WithdrawStakeParams,
-  queryOptions?: Omit<UseQueryOptions, "queryKey" | "queryFn">
+  queryOptions?: Omit<UseQueryOptions, "queryKey" | "queryFn">,
 ) {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const currentChainId = useChainId();
-  const addRecentTransaction = useAddRecentTransaction()
+  const addRecentTransaction = useAddRecentTransaction();
   const queryClient = useQueryClient();
   const { switchChainAsync } = useSwitchChain();
-  const now = new Date().getTime()
-
+  const now = new Date().getTime();
+  console.log("isConnected", isConnected);
   const withdrawConfig = {
     abi: StakingPoolABI,
     address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID]?.StakingPool,
@@ -27,7 +36,7 @@ export function useWithdrawStake(
     functionName: "withdrawBatch",
     args: [params.startIndex, params.batchSize],
     account: address,
-  }
+  };
 
   const {
     writeContract,
@@ -43,6 +52,7 @@ export function useWithdrawStake(
   const {
     isLoading: withdrawConfirming,
     isSuccess: withdrawConfirmed,
+    isError,
     data: withdrawReceipt,
   } = useWaitForTransactionReceipt({
     hash,
@@ -51,18 +61,20 @@ export function useWithdrawStake(
     },
   });
 
+  console.log("isError", isError);
+
   if (withdrawReceipt) {
     addRecentTransaction({
       hash: withdrawReceipt.transactionHash,
-      description: "withdraw"
-    })
+      description: "withdraw",
+    });
   }
 
   return {
     hash,
     withdraw: () => writeContract(withdrawConfig),
     withdrawAsync: async () => {
-      await writeContractAsync(withdrawConfig)
+      await writeContractAsync(withdrawConfig);
     },
     withdrawPending,
     withdrawError,
@@ -72,5 +84,5 @@ export function useWithdrawStake(
     withdrawConfirmed,
     withdrawReceipt,
     ...rest,
-  }
+  };
 }

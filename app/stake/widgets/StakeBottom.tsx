@@ -1,7 +1,7 @@
 "use client";
 import Typograhphy from "@/components/Typograhphy";
 import { Card, CardContent } from "@/components/ui/card";
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@beincom/web-ui";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -16,10 +16,12 @@ import {
 import { useAccount, useBalance, useChainId } from "wagmi";
 import { formatEther, parseEther } from "viem";
 import { useStake } from "@/app/stake/hooks/useStake";
+import { toast } from "sonner";
+import { useGetDeposits } from "../hooks/useGetDeposits";
 
 const StakeBottom = () => {
-  const { currentTier, isLoading: isLoadCurrentTier } = useGetCurrentTier({});
-  const { address, isConnecting } = useAccount();
+  const { currentTier } = useGetCurrentTier({});
+  const { address, isConnected } = useAccount();
   const currentChainId = useChainId();
 
   const { data: bicBalance } = useBalance({
@@ -27,7 +29,7 @@ const StakeBottom = () => {
     token: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID]?.Bic,
     chainId: currentChainId,
   });
-
+  const { refetch } = useGetDeposits();
   const listTitleData = {
     tier: "Current tier",
     interest: "Interest (ARP)",
@@ -35,7 +37,7 @@ const StakeBottom = () => {
   };
 
   const formSchema = z.object({
-    amount: z.coerce.string({
+    amount: z.coerce.number({
       required_error: "Please fill in",
       invalid_type_error: "Amount must be a number",
     }),
@@ -43,23 +45,46 @@ const StakeBottom = () => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    mode: "onChange",
   });
 
-  const { control, handleSubmit, setValue, getValues } = form;
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    getValues,
+    formState: { isValid },
+  } = form;
 
-  const { stakeAsync } = useStake({
-    amount: getValues("amount") ? parseEther(getValues("amount")) : BigInt(0),
+  const { stakeAsync, stakeConfirmed, reset } = useStake({
+    amount:
+      getValues("amount") && isValid
+        ? parseEther(getValues("amount").toString())
+        : BigInt(0),
   });
 
+  useEffect(() => {
+    if (stakeConfirmed) {
+      toast.success("Stake successfully");
+      refetch()
+      reset();
+    }
+  }, [stakeConfirmed]);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
+    if (!isConnected) {
+      toast.warning("Please connect wallet", {
+        position: "top-center",
+      });
+      return;
+    }
+
     stakeAsync();
   };
   const onSetMaxValue = () => {
     if (bicBalance) {
-      setValue("amount", formatEther(bicBalance.value));
+      setValue("amount", Number(formatEther(bicBalance.value)));
     }
   };
-
   return (
     <Card className="w-full rounded-xl">
       <CardContent className="p-6">
@@ -67,19 +92,23 @@ const StakeBottom = () => {
         <div className="flex-col sm:flex-row flex">
           <div className="w-full sm:w-1/2">
             <div className="flex-col sm:flex-row flex gap-2 sm:gap-12">
-              {Object.keys(currentTier).map((item, id) => (
-                <div
-                  className="flex sm:flex-col justify-between sm:justify-start gap-2"
-                  key={id}
-                >
-                  <h3 className="text-neutral-30 text-sm">
-                    {listTitleData[item as keyof typeof listTitleData]}
-                  </h3>
-                  <p className="text-neutral-60 text-sm font-semibold">
-                    {currentTier[item as keyof typeof currentTier]}
-                  </p>
-                </div>
-              ))}
+              {Object.keys(currentTier).length > 0 ? (
+                Object.keys(currentTier).map((item, id) => (
+                  <div
+                    className="flex sm:flex-col justify-between sm:justify-start gap-2"
+                    key={id}
+                  >
+                    <h3 className="text-neutral-30 text-sm">
+                      {listTitleData[item as keyof typeof listTitleData]}
+                    </h3>
+                    <p className="text-neutral-60 text-sm font-semibold">
+                      {currentTier[item as keyof typeof currentTier]}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <div>There is no current tier</div>
+              )}
             </div>
           </div>
           <div className="flex-1 border border-transparent border-t-[#EAEDF2] sm:border-l-[#EAEDF2] sm:border-t-0 sm:pl-6 pt-3 sm:pt-0 mt-4 sm:mt-0">

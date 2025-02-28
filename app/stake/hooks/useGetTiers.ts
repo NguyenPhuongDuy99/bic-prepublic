@@ -1,20 +1,20 @@
 import { useChainId, useReadContract } from "wagmi";
 import { UseQueryOptions } from "@tanstack/react-query";
 import { StakingPoolABI } from "@/app/stake/abis/StakingPool";
-import { DEFAULT_CHAINID, EVM_CONTRACT } from "@/app/stake/constants/contractAddress";
-import { formatEther } from 'viem'
+import {
+  DEFAULT_CHAINID,
+  EVM_CONTRACT,
+} from "@/app/stake/constants/contractAddress";
 
 export function useGetTiers(
-  queryOptions?: Omit<UseQueryOptions, "queryKey" | "queryFn">
+  queryOptions?: Omit<UseQueryOptions, "queryKey" | "queryFn">,
 ) {
-  const currentChainId = useChainId()
-
-  const enabled = Boolean(
-    (queryOptions?.enabled ?? true)
-  )
+  const currentChainId = useChainId();
+  const enabled = Boolean(queryOptions?.enabled);
   const {
     data: tiers,
     queryKey,
+    refetch,
     ...rest
   } = useReadContract({
     abi: StakingPoolABI,
@@ -23,8 +23,8 @@ export function useGetTiers(
     chainId: currentChainId,
     args: [],
     query: {
-      enabled
-    }
+      enabled,
+    },
   });
 
   return {

@@ -11,20 +11,23 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { Button } from "@beincom/web-ui";
-import React from "react";
 import { useGetDeposits } from "@/app/stake/hooks/useGetDeposits";
 import { useWithdrawStake } from "@/app/stake/hooks/useWithdrawStake";
+import { useState } from "react";
+import { useAccount } from "wagmi";
 
 interface StakeTopDesktop extends React.HTMLAttributes<HTMLDivElement> {}
 
 const StakeTopDesktop = ({ className, ...props }: StakeTopDesktop) => {
-  const { deposits } = useGetDeposits({});
-  const [withDrawIndex, setWithDrawIndex] = React.useState<number>(0);
-  const { withdrawAsync } = useWithdrawStake({
+  const { isConnected } = useAccount();
+  const { deposits } = useGetDeposits({
+    enabled: isConnected,
+  });
+  const [withDrawIndex, setWithDrawIndex] = useState<number>(0);
+  const { withdrawAsync, withdrawError } = useWithdrawStake({
     startIndex: withDrawIndex,
     batchSize: 1,
   });
-  console.log("deposits", deposits);
   return (
     <Card className={cn("w-full rounded-xl", className)} {...props}>
       <CardContent className="p-6">

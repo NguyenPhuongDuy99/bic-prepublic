@@ -24,7 +24,7 @@ export function useGetAllowance(
     address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID]?.Bic,
     functionName: "allowance",
     chainId: currentChainId,
-    args: [address!, EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].StakingPool],
+    args: [address!, EVM_CONTRACT[currentChainId || DEFAULT_CHAINID]?.StakingPool],
     query: {
       enabled
     }

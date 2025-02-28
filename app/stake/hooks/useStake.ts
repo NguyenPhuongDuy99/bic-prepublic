@@ -46,6 +46,7 @@ export function useStake(
     isSuccess: stakeSuccess,
     isIdle: stakeIdle,
     data: hash,
+    reset,
     ...rest
   } = useWriteContract();
 
@@ -95,6 +96,7 @@ export function useStake(
     stakeConfirmed,
     stakeConfirming,
     stakePending,
+    reset,
     ...rest,
   }
 }
