@@ -1,6 +1,5 @@
 "use client";
 
-import { Label } from "@/components/ui";
 import { formatUnits } from "viem";
 import { useGetPairReserves } from "../hooks/useGetPairReserves";
 import { useGetCurrentLF } from "../hooks/useGetCurrentLF";
@@ -39,7 +38,7 @@ const Item = ({
 }) => {
   return (
     <div className="flex flex-col gap-2">
-      <div className="text-sm font-normal text-neutral-30">{label}</div>
+      <div className="text-sm text-neutral-30 font-bold">{label}</div>
       {isLoading ? (
         <Skeleton className="w-6 h-6" />
       ) : (
@@ -76,7 +75,69 @@ export const PoolReverseSection = ({
     },
   );
 
-  const isStartSales = Number(roundInfo?.startTime) * 1000 < Date.now();
+  const isInSales =
+    Number(roundInfo?.startTime) * 1000 < Date.now() &&
+    Date.now() < Number(roundInfo?.endTime) * 1000;
+  const isUpComing = Number(roundInfo?.startTime) * 1000 > Date.now();
+  const isEndSales = Date.now() > Number(roundInfo?.endTime);
+  const coolDownDate = coolDown
+    ? (Number(coolDown) + Number(roundInfo?.coolDown)) * 1000
+    : 0;
+  const renderPoolReverseContent = () => {
+    switch (true) {
+      case isUpComing: {
+        return (
+          <>
+            <div className="flex flex-col gap-2">
+              <div className="text-lg font-semibold text-neutral-60 flex items-center gap-2">
+                <FireIcon className="w-6 h-6" />
+                Sales start in
+              </div>
+              <CustomCountdown
+                date={new Date(Number(roundInfo?.startTime) * 1000)}
+              />
+            </div>
+          </>
+        );
+      }
+
+      case isInSales: {
+        return (
+          <>
+            {!!coolDown && (
+              <div className="flex flex-col gap-2 md:justify-between">
+                <div className="text-sm font-normal text-neutral-30">
+                  Cooldown
+                </div>
+                <CoolDown date={coolDownDate} />
+              </div>
+            )}
+            <div className="flex flex-col gap-2">
+              <div className="text-lg font-semibold text-neutral-60 flex items-center gap-2">
+                <FireIcon className="w-6 h-6" />
+                Sales end in
+              </div>
+              <CustomCountdown
+                date={new Date(Number(roundInfo?.endTime) * 1000)}
+              />
+            </div>
+          </>
+        );
+      }
+      case isEndSales: {
+        return (
+          <div className="flex flex-col gap-2">
+            <div className="text-lg font-semibold text-neutral-60 flex items-center gap-2">
+              <FireIcon className="w-6 h-6" />
+              Sales ended
+            </div>
+          </div>
+        );
+      }
+      default:
+        break;
+    }
+  };
 
   const renderPrePublicPhase = () => {
     if (!roundInfo || !address) return;
@@ -93,48 +154,41 @@ export const PoolReverseSection = ({
     }
 
     const maxAmountPerBuy = numericFormatter(
-      formatUnits(roundInfo.maxAmountPerBuy ?? BigInt(0), 18),
+      formatUnits(roundInfo?.maxAmountPerBuy ?? BigInt(0), 18),
       {
         thousandSeparator: true,
       },
     );
-    const coolDownDate = coolDown
-      ? (Number(coolDown) + Number(roundInfo.coolDown)) * 1000
-      : 0;
 
     return (
       <>
-        <Divider orientation="horizontal" className="md:hidden" />
-        <Divider orientation="vertical" className="hidden md:block" />
-        <Item label="Whitelist" value={`${roundInfo.category}`} />
+        <Item label="Whitelist" value={`${roundInfo?.category}`} />
         <Item label="Max Per Buy" value={`${maxAmountPerBuy} ${BIC_SYMBOL}`} />
-        {!!coolDown && (
+        {/* {!!coolDown && !isStartSales && (
           <div className="flex flex-col gap-2 md:justify-between">
             <div className="text-sm font-normal text-neutral-30">Cooldown</div>
             <CoolDown date={coolDownDate} />
           </div>
         )}
+
         <div className="flex flex-col gap-2">
-          {isStartSales ? (
-            <div className="text-lg font-semibold text-neutral-60 flex items-center gap-2">
-              <FireIcon className="w-6 h-6" />
-              Sales end in
-            </div>
-          ) : (
-            <div className="text-sm font-normal text-neutral-30">
-              Open sales in
-            </div>
-          )}
+          <div className="text-lg font-semibold text-neutral-60 flex items-center gap-2">
+            <FireIcon className="w-6 h-6" />
+            Sales end in
+          </div>
           <CustomCountdown
             date={
               new Date(
                 isStartSales
-                  ? Number(roundInfo.endTime) * 1000
-                  : Number(roundInfo.startTime) * 1000,
+                  ? Number(roundInfo?.endTime) * 1000
+                  : Number(roundInfo?.startTime) * 1000,
               )
             }
           />
-        </div>
+        </div> */}
+        {renderPoolReverseContent()}
+        <Divider orientation="horizontal" className="md:hidden" />
+        <Divider orientation="vertical" className="hidden md:block" />
       </>
     );
   };
@@ -181,8 +235,8 @@ export const PoolReverseSection = ({
   const minSwapBackValue = formatUnits(minSwapBack ?? BigInt(0), 18);
 
   return (
-    <SectionLayout className="flex flex-col gap-8">
-      <div className="w-full flex flex-col justify-start items-center gap-6">
+    <SectionLayout className="flex gap-8 justify-between">
+      {/* <div className="w-full flex flex-col justify-start items-center gap-6">
         <div className="w-full flex justify-between items-center md:items-start">
           <div className="flex flex-col gap-2">
             <Label className="text-sm font-normal text-neutral-30">
@@ -193,22 +247,23 @@ export const PoolReverseSection = ({
           <AddToken />
         </div>
         <PoolReservesInfo className="md:hidden" />
-      </div>
+      </div> */}
       <div className="flex flex-col gap-3 md:gap-2 md:flex-row lg:gap-10">
-        <Item
+        {/* <Item
           label="Min Swap Back and Liquify"
           value={`${formatNumber(minSwapBackValue)} ${BIC_SYMBOL}`}
           isLoading={isLoadingMinSwapBack}
-        />
-        <Item label={`Swap ETH - ${BIC_SYMBOL} LF`} value={"0%"} />
-        <Item
-          label={`Swap ${BIC_SYMBOL} - ETH LF`}
-          value={`${Number(currentLF) / 100}%`}
-          isLoading={isLoadingCurrentLF}
-        />
+        /> */}
 
         {renderPrePublicPhase()}
+        <Item label={`Sell ETH - ${BIC_SYMBOL} `} value={"LF 0%"} />
+        <Item
+          label={`Sell ${BIC_SYMBOL} - ETH `}
+          value={`LF ${Number(currentLF) / 100}%`}
+          isLoading={isLoadingCurrentLF}
+        />
       </div>
+      <AddToken />
     </SectionLayout>
   );
 };

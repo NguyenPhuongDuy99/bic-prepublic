@@ -23,10 +23,10 @@ export function useGetAllowance(
     ...rest
   } = useReadContract({
     abi: ERC20ABI,
-    address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].BTest,
+    address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID]?.BTest,
     functionName: "allowance",
     chainId: currentChainId,
-    args: [params.owner!, EVM_CONTRACT[currentChainId || DEFAULT_CHAINID].UniswapRouter],
+    args: [params.owner!, EVM_CONTRACT[currentChainId || DEFAULT_CHAINID]?.UniswapRouter],
     query: {
       enabled
     }
