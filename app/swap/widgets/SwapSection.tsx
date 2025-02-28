@@ -24,6 +24,7 @@ import { Button, Input } from "@beincom/web-ui";
 import { TokenSelectBox } from "../components/TokenSelectBox";
 import { NumericFormat } from "react-number-format";
 import { formatNumber } from "../hooks/formatNumberByDecimal";
+import { Card, CardContent } from "@/components/ui/card";
 interface Props {
   address?: `0x${string}`;
   prePublic?: boolean;
@@ -139,170 +140,153 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
 
   return (
     <div className="w-full flex flex-col gap-3">
-      <SectionLayout className="flex flex-col items-start gap-6 w-full">
+      <Card className="w-full rounded-xl">
         {/* <Label className="w-full text-lg" style={{ color: "orange" }}>
           {prePublic ? "Pre Public Phase" : "Public Phase"}
         </Label> */}
-        <div className="flex flex-col items-start gap-4 w-full">
-          <div className="w-full flex flex-col gap-2">
-            <Label
-              htmlFor="origin-chain"
-              className="text-base font-normal text-neutral-60"
-            >
-              Sell
-            </Label>
-            <div className="w-full flex justify-start items-center gap-3">
-              <TokenSelectBox
-                token={fromToken}
-                options={TokenList}
-                onTokenChange={setFromToken}
-              />
-              <Input
-                focused={undefined}
-                filled={undefined}
-                // suffix={
-                //   <Button
-                //     type="ghost"
-                //     variant="neutral"
-                //     size="sm"
-                //     onClick={onMax}
-                //     className="px-2"
-                //   >
-                //     Max
-                //   </Button>
-                // }
+        <CardContent className="p-6">
+          <div className="flex flex-col items-start gap-4 w-full">
+            <div className="w-full flex flex-col gap-2">
+              <Label
+                htmlFor="origin-chain"
+                className="text-base font-normal text-neutral-60"
               >
-                <NumericFormat
-                  id="input-amount"
-                  value={inputAmount}
-                  allowLeadingZeros={false}
-                  thousandSeparator=","
-                  decimalScale={10}
-                  placeholder="Enter amount"
-                  allowNegative={false}
-                  className="max-w-[130px] text-ellipsis text-left text-sm font-medium text-neutral-60 disabled:text-neutral-20 focus:outline-none"
-                  onValueChange={(value) => setInputAmount(value.value)}
+                Sell
+              </Label>
+              <div className="w-full flex gap-3">
+                <TokenSelectBox
+                  token={fromToken}
+                  options={TokenList}
+                  onTokenChange={setFromToken}
                 />
-
-                <Label className="text-xs text-neutral-40">
-                  {inputBalance}
-                </Label>
-              </Input>
-            </div>
-          </div>
-
-          <Button
-            isOnlyIcon={true}
-            variant="neutral"
-            size="md"
-            type="subtle"
-            className="rounded-full border border-neutral-5 p-2 h-8 w-8"
-            onClick={() => {
-              setFromToken(toToken);
-              setToToken(fromToken);
-              setInputAmount("");
-            }}
-          >
-            <TokenSwapIcon className="size-5 text-neutral-60 shrink-0" />
-          </Button>
-          <div className="w-full flex flex-col gap-2">
-            <Label
-              htmlFor="destination-chain"
-              className="text-base font-normal text-neutral-60"
-            >
-              Buy
-            </Label>
-            <div className="w-full flex justify-start items-center gap-3">
-              <TokenSelectBox
-                token={toToken}
-                options={TokenList}
-                onTokenChange={setToToken}
-              />
-              <Input focused={undefined} filled={undefined}>
-                <NumericFormat
-                  displayType="text"
-                  value={Number(
-                    formatUnits(
-                      outAmounts ? outAmounts[1] : BigInt(0),
-                      toToken ? toToken.decimals : 18,
-                    ),
-                  ).toFixed(2)}
-                  id="input-amount"
-                  allowLeadingZeros={false}
-                  thousandSeparator=","
-                  decimalScale={EIGHT_DECIMALS}
-                  placeholder="Output amount"
-                  allowNegative={false}
-                  className="max-w-[100px] text-left text-sm font-medium text-neutral-60 disabled:text-neutral-20 overflow-hidden"
-                />
-
-                <Label className="text-xs text-neutral-40">
-                  {outputBalance}
-                </Label>
-              </Input>
-            </div>
-          </div>
-        </div>
-        <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
-          <div className="flex flex-col items-start gap-2 w-full">
-            {roundInfo &&
-              prePublic &&
-              (now < roundInfo.startTime || now > roundInfo.endTime) && (
-                <Label className="flex-[5]" style={{ color: "red" }}>
-                  Your pre-public round is not active. Please check the round
-                  info above!
-                </Label>
-              )}
-            {roundInfo &&
-              prePublic &&
-              outAmounts &&
-              fromToken &&
-              fromToken.symbol === "ETH" &&
-              outAmounts[1] > roundInfo.maxAmountPerBuy && (
-                <div>
-                  <Label className="flex-[5]" style={{ color: "red" }}>
-                    Over swap max amount per buy in your pre-public round{" "}
-                    {formatUnits(roundInfo.maxAmountPerBuy, 18)} BTEST
+                <div className="flex flex-1 items-center border border-neutral-5 rounded w-full gap-3 p-1 justify-between">
+                  <NumericFormat
+                    id="input-amount"
+                    value={inputAmount}
+                    allowLeadingZeros={false}
+                    thousandSeparator=","
+                    decimalScale={10}
+                    placeholder="Enter amount"
+                    allowNegative={false}
+                    className="max-w-[102px] sm:max-w-full flex-1 text-ellipsis text-left text-sm font-medium text-neutral-60 disabled:text-neutral-20 focus:outline-none"
+                    onValueChange={(value) => setInputAmount(value.value)}
+                  />
+                  <Label className="text-xs text-neutral-40 flex-shrink-0">
+                    {inputBalance}
                   </Label>
                 </div>
-              )}
-            {prePublic && !roundInfo && (
-              <Label className="w-full" style={{ color: "red" }}>
-                You are not in whitelist. Please wait for public phase!
-              </Label>
-            )}
-
+              </div>
+            </div>
             <Button
-              onClick={() => swapAsync()}
-              disabled={
-                !(outAmounts && toToken) ||
-                swapPending ||
-                approvePending ||
-                (prePublic &&
-                  roundInfo &&
-                  (now < roundInfo.startTime || now > roundInfo.endTime))
-              }
-              className="w-full"
-              variant="primary"
-              size="xl"
+              isOnlyIcon={true}
+              variant="neutral"
+              size="md"
+              type="subtle"
+              className="rounded-full border border-neutral-5 p-2 h-8 w-8"
+              onClick={() => {
+                setFromToken(toToken);
+                setToToken(fromToken);
+                setInputAmount("");
+              }}
             >
-              {approvePending
-                ? "Approving"
-                : swapPending
-                ? "Executing..."
-                : "Swap"}
+              <TokenSwapIcon className="size-5 text-neutral-60 shrink-0" />
             </Button>
-
-            {/* <div className="flex gap-2">
-                    {swapTxLink && (
-                      <ExternalLink icon href={swapTxLink}>
-                        Swap Tx
-                      </ExternalLink>
-                    )}
-                  </div> */}
+            <div className="w-full flex flex-col gap-2">
+              <Label
+                htmlFor="destination-chain"
+                className="text-base font-normal text-neutral-60"
+              >
+                Buy
+              </Label>
+              <div className="w-full flex justify-start items-center gap-3">
+                <TokenSelectBox
+                  token={toToken}
+                  options={TokenList}
+                  onTokenChange={setToToken}
+                />
+                <Input focused={undefined} filled={undefined}>
+                  <NumericFormat
+                    displayType="text"
+                    value={Number(
+                      formatUnits(
+                        outAmounts ? outAmounts[1] : BigInt(0),
+                        toToken ? toToken.decimals : 18,
+                      ),
+                    ).toFixed(2)}
+                    id="input-amount"
+                    allowLeadingZeros={false}
+                    thousandSeparator=","
+                    decimalScale={EIGHT_DECIMALS}
+                    placeholder="Output amount"
+                    allowNegative={false}
+                    className="max-w-[100px] text-left text-sm font-medium text-neutral-60 disabled:text-neutral-20 overflow-hidden"
+                  />
+                  <Label className="text-xs text-neutral-40">
+                    {outputBalance}
+                  </Label>
+                </Input>
+              </div>
+            </div>
           </div>
-        </div>
-      </SectionLayout>
+          <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
+            <div className="flex flex-col items-start gap-2 w-full">
+              {roundInfo &&
+                prePublic &&
+                (now < roundInfo.startTime || now > roundInfo.endTime) && (
+                  <Label className="flex-[5]" style={{ color: "red" }}>
+                    Your pre-public round is not active. Please check the round
+                    info above!
+                  </Label>
+                )}
+              {roundInfo &&
+                prePublic &&
+                outAmounts &&
+                fromToken &&
+                fromToken.symbol === "ETH" &&
+                outAmounts[1] > roundInfo.maxAmountPerBuy && (
+                  <div>
+                    <Label className="flex-[5]" style={{ color: "red" }}>
+                      Over swap max amount per buy in your pre-public round{" "}
+                      {formatUnits(roundInfo.maxAmountPerBuy, 18)} BTEST
+                    </Label>
+                  </div>
+                )}
+              {prePublic && !roundInfo && (
+                <Label className="w-full" style={{ color: "red" }}>
+                  You are not in whitelist. Please wait for public phase!
+                </Label>
+              )}
+              <Button
+                onClick={() => swapAsync()}
+                disabled={
+                  !(outAmounts && toToken) ||
+                  swapPending ||
+                  approvePending ||
+                  (prePublic &&
+                    roundInfo &&
+                    (now < roundInfo.startTime || now > roundInfo.endTime))
+                }
+                className="w-full mt-5"
+                variant="primary"
+                size="xl"
+              >
+                {approvePending
+                  ? "Approving"
+                  : swapPending
+                  ? "Executing..."
+                  : "Swap"}
+              </Button>
+              {/* <div className="flex gap-2">
+                      {swapTxLink && (
+                        <ExternalLink icon href={swapTxLink}>
+                          Swap Tx
+                        </ExternalLink>
+                      )}
+                    </div> */}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* <div className="flex flex-col items-start gap-2 bg-foreground border border-border-secondary p-6 w-full rounded-[10px]">
           { roundInfo && prePublic && (now < roundInfo.startTime || now > roundInfo.endTime) && 
@@ -341,18 +325,18 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
           </div>
         </div>
         <Divider className="my-4" /> */}
-
+      {/* 
       <SectionLayout className="flex flex-col items-start gap-6 ">
         <Label style={{ color: "#ED9B07" }} className="text-base font-normal">
           Warning over swap back and liquify
         </Label>
-        {/* { fromToken?.symbol === 'ETH' && outAmounts && toTokenBalance &&
+        { fromToken?.symbol === 'ETH' && outAmounts && toTokenBalance &&
             THRESHOLD.MaxAllocation < outAmounts[1] + toTokenBalance?.value && 
             <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-2">
               <Label className="flex-[5]">Your current allocation: {fromToken?.symbol === 'ETH' ? outputBalance : inputBalance} + Swap Output: {Number(formatUnits(outAmounts ? outAmounts[1] : BigInt(0), toToken ? toToken.decimals : 18)).toFixed(4)}</Label>
               <Label style={{ color: 'red' }}>Over Max Allocation 8.88B BTEST</Label>
             </div>
-          } */}
+          }
         <div className="w-full flex flex-col gap-3 md:flex-row md:justify-start">
           <div className="w-full flex flex-col justify-start items-center gap-2 md:w-auto">
             <ExternalLinkButton
@@ -388,7 +372,7 @@ export default function SwapSection({ address, prePublic, roundInfo }: Props) {
             Accumulated Liquidity Position
           </ExternalLinkButton>
         </div>
-      </SectionLayout>
+      </SectionLayout> */}
     </div>
   );
 }

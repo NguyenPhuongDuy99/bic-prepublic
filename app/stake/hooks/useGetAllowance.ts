@@ -1,20 +1,18 @@
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
-import { useChainId, useReadContract } from "wagmi";
+import { useAccount, useChainId, useReadContract } from "wagmi";
 import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
-import { ERC20ABI } from "../abis/ERC20";
+import { ERC20ABI } from "@/app/swap/abis/ERC20";
 
-interface ApproveParams {
-  owner: `0x${string}` | undefined
-}
 
 export function useGetAllowance(
-  params: ApproveParams,
   queryOptions?: Omit<UseQueryOptions, "queryKey" | "queryFn">
 ) {
+  const { address } = useAccount();
+
   const currentChainId = useChainId()
 
   const enabled = Boolean(
-    params.owner && (queryOptions?.enabled ?? true)
+    (queryOptions?.enabled ?? true)
   )
   
   const {
@@ -23,10 +21,10 @@ export function useGetAllowance(
     ...rest
   } = useReadContract({
     abi: ERC20ABI,
-    address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID]?.BTest,
+    address: EVM_CONTRACT[currentChainId || DEFAULT_CHAINID]?.Bic,
     functionName: "allowance",
     chainId: currentChainId,
-    args: [params.owner!, EVM_CONTRACT[currentChainId || DEFAULT_CHAINID]?.UniswapRouter],
+    args: [address!, EVM_CONTRACT[currentChainId || DEFAULT_CHAINID]?.StakingPool],
     query: {
       enabled
     }

@@ -22,7 +22,7 @@ export function TokenInput({
           {onMax && (
             <Button
               className="text-xs rounded-md px-2 py-1 h-fit"
-              variant="bordered"
+              variant="outline"
               onClick={onMax}
             >
               MAX
