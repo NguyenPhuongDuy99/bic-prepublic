@@ -142,17 +142,6 @@ export const PoolReverseSection = ({
 
   const renderPrePublicPhase = () => {
     if (!roundInfo || !address) return;
-    if (!prePublic) {
-      return (
-        <HelpText
-          state="error"
-          containerClassName="[&_svg]:text-red-50"
-          className="text-red-50"
-        >
-          You are not in whitelist. Please wait for public phase!
-        </HelpText>
-      );
-    }
 
     const maxAmountPerBuy = numericFormatter(
       formatUnits(roundInfo?.maxAmountPerBuy ?? BigInt(0), 18),
