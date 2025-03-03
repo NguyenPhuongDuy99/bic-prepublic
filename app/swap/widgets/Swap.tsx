@@ -33,6 +33,13 @@ export function Swap() {
     },
   );
 
+  console.log({
+    isConnecting,
+    isLoadingWhitelistCategory,
+    isLoadingRoundInfo,
+    isLoadingPrePublic,
+  });
+
   if (
     isConnecting ||
     isLoadingWhitelistCategory ||

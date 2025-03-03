@@ -1,17 +1,15 @@
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import { UseQueryOptions } from "@tanstack/react-query";
 import { useChainId, useReadContract } from "wagmi";
 import { DEFAULT_CHAINID, EVM_CONTRACT } from "../constants/contractAddress";
 import { BICABI } from "../abis/BIC";
 
 export function useGetPrePublic(
-  queryOptions?: Omit<UseQueryOptions, "queryKey" | "queryFn">
+  queryOptions?: Omit<UseQueryOptions, "queryKey" | "queryFn">,
 ) {
-  const currentChainId = useChainId()
+  const currentChainId = useChainId();
 
-  const enabled = Boolean(
-    (queryOptions?.enabled ?? true)
-  )
-  
+  const enabled = Boolean(queryOptions?.enabled ?? true);
+
   const {
     data: prePublic,
     queryKey,
@@ -23,8 +21,9 @@ export function useGetPrePublic(
     chainId: currentChainId,
     args: [],
     query: {
-      enabled
-    }
+      enabled,
+      refetchOnWindowFocus: false,
+    },
   });
 
   return {
