@@ -158,28 +158,6 @@ export const PoolReverseSection = ({
         <Item label="Max Per Buy" value={`${maxAmountPerBuy} ${BIC_SYMBOL}`} />
         <Divider orientation="horizontal" className="md:hidden" />
         <Divider orientation="vertical" className="hidden md:block" />
-        {/* {!!coolDown && !isStartSales && (
-          <div className="flex flex-col gap-2 md:justify-between">
-            <div className="text-sm font-normal text-neutral-30">Cooldown</div>
-            <CoolDown date={coolDownDate} />
-          </div>
-        )}
-
-        <div className="flex flex-col gap-2">
-          <div className="text-lg font-semibold text-neutral-60 flex items-center gap-2">
-            <FireIcon className="w-6 h-6" />
-            Sales end in
-          </div>
-          <CustomCountdown
-            date={
-              new Date(
-                isStartSales
-                  ? Number(roundInfo?.endTime) * 1000
-                  : Number(roundInfo?.startTime) * 1000,
-              )
-            }
-          />
-        </div> */}
         {renderPoolReverseContent()}
         <Divider orientation="horizontal" className="md:hidden" />
         <Divider orientation="vertical" className="hidden md:block" />
